@@ -1,5 +1,6 @@
 import type { MutableRefObject } from "react";
 import type { TAction } from "./definitions";
+import { ACTIONS } from "./definitions";
 
 export type { TAction };
 
@@ -23,6 +24,18 @@ export type TActionWithOptionalArgs =
 	| TKeysWithValueUndefined<TActionArgsMap>;
 
 export type TActionWithNoArgs = Exclude<TAction, TActionWithArgs>;
+
+export function isActionWithOptionalArgs(
+	value: unknown,
+): value is TActionWithOptionalArgs {
+	if (typeof value !== "string" || !(value in ACTIONS)) return false;
+	const definition = ACTIONS[value as TAction];
+	return !definition.args ||
+		value === "seek-forward" ||
+		value === "seek-backward" ||
+		value === "jump-forward" ||
+		value === "jump-backward";
+}
 
 export type TArgOfAction<A extends TAction> = A extends TActionWithArgs
 	? TActionArgsMap[A]
