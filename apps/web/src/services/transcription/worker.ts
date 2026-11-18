@@ -7,6 +7,7 @@ import type { TranscriptionSegment, TranscriptionWord } from "@/transcription/ty
 import {
 	DEFAULT_CHUNK_LENGTH_SECONDS,
 	DEFAULT_STRIDE_SECONDS,
+	DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
 } from "@/transcription/audio";
 
 export type WorkerMessage =
@@ -158,6 +159,14 @@ async function handleTranscribe({
 				words.push({ text, start, end });
 				segments.push({ text, start, end });
 			}
+		}
+
+		if (words.length === 0 && result.text.trim()) {
+			segments.push({
+				text: result.text,
+				start: 0,
+				end: audio.length / DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
+			});
 		}
 
 		self.postMessage({
