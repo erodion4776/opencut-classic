@@ -20,8 +20,8 @@ import type {
 import type { SubtitleCue } from "@/subtitles/types";
 import { transcriptionService } from "@/services/transcription/service";
 import { decodeAudioToFloat32 } from "@/media/audio";
-import { buildSubtitleCues } from "@/transcription/caption";
-import { insertSubtitleCuesAsTextTrack } from "@/subtitles/insert";
+import { buildCaptionChunks } from "@/transcription/caption";
+import { insertCaptionChunksAsTextTrack } from "@/subtitles/insert";
 import { parseSubtitleFile } from "@/subtitles/parse";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -116,7 +116,7 @@ export function Captions() {
 	}: {
 		captions: SubtitleCue[];
 	}): boolean => {
-		const trackId = insertSubtitleCuesAsTextTrack({ editor, captions });
+		const trackId = insertCaptionChunksAsTextTrack({ editor, captions });
 		return trackId !== null;
 	};
 
@@ -142,7 +142,7 @@ export function Captions() {
 			});
 
 			dispatch({ type: "update_step", step: "Generating captions..." });
-			const captionChunks = buildSubtitleCues({
+			const captionChunks = buildCaptionChunks({
 				segments: result.segments,
 				words: result.words,
 				wordsPerChunk: Number(wordsPerCaption),
