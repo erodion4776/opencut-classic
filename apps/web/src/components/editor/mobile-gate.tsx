@@ -18,7 +18,7 @@ export function MobileGate({ children }: MobileGateProps) {
 	const [show, setShow] = useState<boolean | null>(null);
 
 	useEffect(() => {
-		const isMobile = window.innerWidth < 1024;
+		const isMobile = window.innerWidth < 768;
 		const acknowledged = localStorage.getItem(STORAGE_KEY) === "true";
 		setShow(isMobile && !acknowledged);
 	}, []);
