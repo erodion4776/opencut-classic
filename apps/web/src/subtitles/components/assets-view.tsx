@@ -325,6 +325,9 @@ export function Captions() {
 							</Select>
 						</SectionField>
 					</SectionFields>
+					<p className="text-muted-foreground text-xs">
+						Word timing is estimated evenly within each detected speech segment; precise word-level alignment is not yet available.
+					</p>
 
 					<Button
 						type="button"
