@@ -24,6 +24,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** the starter library now includes Gaussian Blur, Color Adjust, Sepia, Black & White, and Vignette. These additions have source-level renderer wiring but still require compilation and preview/export verification.
 - **Caption styling:** the Captions panel includes Classic, Creator Bold, Yellow Highlight, and Soft Box presets. Applying a preset updates selected text/subtitle clips through the existing timeline update command; multi-selection is supported and non-text selections are left unchanged. These are whole-clip styles.
+- **Caption entrance and exit animations:** the Captions panel includes Fade In + Out, Pop In + Out, and Slide Up + Down presets for one selected text clip. Duration choices are 0.25, 0.5, 0.75, and 1 second, capped at half the clip duration. Presets use native opacity or transform keyframes and refuse to overwrite an existing affected animation channel. These are linear animations; custom easing, independent entrance/exit timing, and animated caption-word transitions are not included.
 - **Word-by-word caption mode:** transcription can now generate one-word, three-word, or five-word caption clips. One-word mode gives a sequential, karaoke-like presentation and can be combined with the caption style presets. The transcription worker requests Whisper word-level timestamps and passes the returned word timings into caption generation. One-word, three-word, and five-word captions are grouped using those model-provided word boundaries when available; if the model returns no usable word timestamps, generation falls back to estimated segment timing. In one-word mode, each sequential word clip receives a bold yellow style, producing a karaoke-style active-word highlight as playback advances. This is implemented as timed individual clips, not animated per-word styling inside one multiword text object. Whisper timestamps are model estimates and should be reviewed for accuracy. Imported SRT/ASS files retain their own cue timing.
 - **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
 
@@ -40,7 +41,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Extend transitions with overlap-aware crossfades and timeline transition handles only after adding a dedicated transition model, editing operations, serialization, and renderer support.
 - Extend color grading only with persisted parameters consumed by both preview and export; do not add decorative controls.
 - Expand effects only with actual renderer-backed effects and editable parameters.
-- Expand subtitle styling with per-word highlighting and timing controls only after word-level timing and renderer support are implemented.
+- Expand subtitle styling with per-word highlighting and timing controls only after word-level timing and renderer support are implemented. Extend caption animation controls with independent entrance/exit timing and easing only after preview/export behaviour is verified.
 - Keep every control connected to project state; avoid decorative controls that do not change the output.
 
 ### Stage 3 — Social publishing handoff
@@ -52,7 +53,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Acceptance checklist
 
 - [ ] Android Chrome: create/open a project and import local media.
-- [ ] Android Chrome: edit text/captions, apply caption style presets, test one-word/three-word/five-word transcription modes, and use the timeline without horizontal page overflow.
+- [ ] Android Chrome: edit text/captions, apply caption style and entrance/exit animation presets, test one-word/three-word/five-word transcription modes, and use the timeline without horizontal page overflow.
 - [ ] Desktop: resize panels and use the timeline.
 - [ ] Save, close, and reopen a project without losing edits.
 - [ ] Verify transform, blending, and Gaussian Blur edits persist and affect preview/export.
