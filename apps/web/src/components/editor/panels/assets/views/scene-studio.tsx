@@ -97,7 +97,7 @@ export function SceneStudioView() {
    const length = end - start;
    const before = index > 0 ? cuts[index - 1]?.score ?? 0 : 0;
    const after = index < cuts.length ? cuts[index]?.score ?? 0 : 0;
-   const visualChange = Math.max(before, after);
+   const visualChange = (Math.max(before, after) / 255) * 100;
    const durationFit = length >= 4 && length <= 15 ? 100 : Math.max(0, 100 - Math.min(Math.abs(length - 8) * 8, 100));
    const score = Math.round(visualChange * 0.7 + durationFit * 0.3);
    return { start, end, length, score };
@@ -137,7 +137,7 @@ export function SceneStudioView() {
  };
 
  return (
-  <PanelView title="Scene Studio" contentClassName="pb-6">
+  <PanelView title="Scene & Highlight Studio" contentClassName="pb-6">
    <div className="flex flex-col gap-3">
     <section className="rounded-md border p-3">
      <h3 className="text-sm font-semibold">Video scene detection</h3>
