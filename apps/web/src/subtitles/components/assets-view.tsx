@@ -87,6 +87,7 @@ function processingReducer(
 export function Captions() {
 	const [selectedLanguage, setSelectedLanguage] =
 		useState<TranscriptionLanguage>("auto");
+	const [wordsPerCaption, setWordsPerCaption] = useState("3");
 	const [processing, dispatch] = useReducer(processingReducer, IDLE_STATE);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -140,7 +141,10 @@ export function Captions() {
 			});
 
 			dispatch({ type: "update_step", step: "Generating captions..." });
-			const captionChunks = buildCaptionChunks({ segments: result.segments });
+			const captionChunks = buildCaptionChunks({
+				segments: result.segments,
+				wordsPerChunk: Number(wordsPerCaption),
+			});
 
 			if (!insertCaptions({ captions: captionChunks })) {
 				dispatch({ type: "fail", error: "No captions were generated" });
@@ -305,6 +309,18 @@ export function Captions() {
 											{language.name}
 										</SelectItem>
 									))}
+								</SelectContent>
+							</Select>
+						</SectionField>
+						<SectionField label="Caption timing style">
+							<Select value={wordsPerCaption} onValueChange={setWordsPerCaption}>
+								<SelectTrigger>
+									<SelectValue placeholder="Words per caption" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="1">Word by word</SelectItem>
+									<SelectItem value="3">3 words at a time</SelectItem>
+									<SelectItem value="5">5 words at a time</SelectItem>
 								</SelectContent>
 							</Select>
 						</SectionField>
