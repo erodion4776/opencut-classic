@@ -15,6 +15,7 @@ import { TextAnimationsView } from "./views/text-animations";
 import { TextStudioView } from "./views/text-studio";
 import { AudioStudioView } from "./views/audio-studio";
 import { SmartCutView } from "./views/smart-cut";
+import { SceneStudioView } from "./views/scene-studio";
 
 export function AssetsPanel() {
 	const { activeTab } = useAssetsPanelStore();
@@ -32,6 +33,7 @@ export function AssetsPanel() {
 		"text-studio": <TextStudioView />,
 		"audio-studio": <AudioStudioView />,
 		"smart-cut": <SmartCutView />,
+		"scene-studio": <SceneStudioView />,
 		settings: <SettingsView />,
 	};
 
