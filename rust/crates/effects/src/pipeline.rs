@@ -11,6 +11,8 @@ const GAUSSIAN_BLUR_SHADER_ID: &str = "gaussian-blur";
 const GAUSSIAN_BLUR_SHADER_SOURCE: &str = include_str!("shaders/gaussian_blur.wgsl");
 const COLOR_ADJUST_SHADER_ID: &str = "color-adjust";
 const COLOR_ADJUST_SHADER_SOURCE: &str = include_str!("shaders/color_adjust.wgsl");
+const XTOP_STYLIZE_SHADER_ID: &str = "xtop-stylize";
+const XTOP_STYLIZE_SHADER_SOURCE: &str = include_str!("shaders/xtop_stylize.wgsl");
 
 pub struct ApplyEffectsOptions<'a> {
     pub source: &'a wgpu::Texture,
@@ -89,6 +91,10 @@ impl EffectPipeline {
         let color_adjust_shader_module = context.device().create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("effects-color-adjust-shader"),
             source: wgpu::ShaderSource::Wgsl(COLOR_ADJUST_SHADER_SOURCE.into()),
+        });
+        let xtop_stylize_shader_module = context.device().create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("effects-xtop-stylize-shader"),
+            source: wgpu::ShaderSource::Wgsl(XTOP_STYLIZE_SHADER_SOURCE.into()),
         });
         let pipeline_layout =
             context
@@ -173,9 +179,46 @@ impl EffectPipeline {
                     multiview_mask: None,
                     cache: None,
                 });
+        let xtop_stylize_pipeline =
+            context
+                .device()
+                .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                    label: Some("effects-xtop-stylize-pipeline"),
+                    layout: Some(&pipeline_layout),
+                    vertex: wgpu::VertexState {
+                        module: &vertex_shader_module,
+                        entry_point: Some("vertex_main"),
+                        buffers: &[wgpu::VertexBufferLayout {
+                            array_stride: std::mem::size_of::<[f32; 2]>() as u64,
+                            step_mode: wgpu::VertexStepMode::Vertex,
+                            attributes: &[wgpu::VertexAttribute {
+                                format: wgpu::VertexFormat::Float32x2,
+                                offset: 0,
+                                shader_location: 0,
+                            }],
+                        }],
+                        compilation_options: wgpu::PipelineCompilationOptions::default(),
+                    },
+                    fragment: Some(wgpu::FragmentState {
+                        module: &xtop_stylize_shader_module,
+                        entry_point: Some("fragment_main"),
+                        targets: &[Some(wgpu::ColorTargetState {
+                            format: context.texture_format(),
+                            blend: None,
+                            write_mask: wgpu::ColorWrites::ALL,
+                        })],
+                        compilation_options: wgpu::PipelineCompilationOptions::default(),
+                    }),
+                    primitive: wgpu::PrimitiveState::default(),
+                    depth_stencil: None,
+                    multisample: wgpu::MultisampleState::default(),
+                    multiview_mask: None,
+                    cache: None,
+                });
         let pipelines = HashMap::from([
             (GAUSSIAN_BLUR_SHADER_ID.to_string(), gaussian_blur_pipeline),
             (COLOR_ADJUST_SHADER_ID.to_string(), color_adjust_pipeline),
+            (XTOP_STYLIZE_SHADER_ID.to_string(), xtop_stylize_pipeline),
         ]);
 
         Self {
@@ -312,6 +355,23 @@ fn pack_effect_uniforms(
     height: u32,
 ) -> Result<EffectUniformBuffer, EffectsError> {
     let shader = pass.shader.as_str();
+    if shader == XTOP_STYLIZE_SHADER_ID {
+        let amount = read_number_uniform(pass, "u_amount")?;
+        let mode = read_number_uniform(pass, "u_mode")?;
+        for uniform in pass.uniforms.keys() {
+            if !["u_amount", "u_mode"].contains(&uniform.as_str()) {
+                return Err(EffectsError::UnsupportedUniform { shader: shader.to_string(), uniform: uniform.clone() });
+            }
+        }
+        if !(0.0..=2.0).contains(&mode) {
+            return Err(EffectsError::InvalidNumberUniform { shader: shader.to_string(), uniform: "u_mode".to_string() });
+        }
+        return Ok(EffectUniformBuffer {
+            resolution: [width as f32, height as f32],
+            direction: [0.0, 0.0],
+            scalars: [amount, mode, 0.0, 0.0],
+        });
+    }
     if shader == COLOR_ADJUST_SHADER_ID {
         let brightness = read_number_uniform(pass, "u_brightness")?;
         let contrast = read_number_uniform(pass, "u_contrast")?;
