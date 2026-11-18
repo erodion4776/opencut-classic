@@ -49,14 +49,14 @@ export function MobileGate({ children }: MobileGateProps) {
 			<div className="flex flex-1 flex-col justify-center gap-5 px-7">
 				<div className="flex flex-col gap-3">
 					<h1 className="text-foreground text-3xl font-bold tracking-tight">
-						Mobile experience in progress
+						XTOP mobile editing mode
 					</h1>
 					<p className="text-muted-foreground text-sm leading-relaxed">
-						The editing workspace is currently designed for larger screens. You can still preview it on your phone, but some controls may be difficult to use.
+						A compact phone layout is now available. Switch between Media & tools, Preview, and Properties above the timeline. For the most precise editing, a larger screen is still recommended.
 					</p>
 				</div>
 				<div className="flex items-center gap-3">
-					<Button onClick={handleContinue}>Take a look anyway</Button>
+					<Button onClick={handleContinue}>Open mobile editor</Button>
 					<Button variant="ghost" asChild>
 						<Link href="/roadmap" className="flex items-center gap-1">
 							Roadmap
