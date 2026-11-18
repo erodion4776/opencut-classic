@@ -324,6 +324,27 @@ const textElementParams: ElementParamDefinition[] = [
 		step: 1,
 		dependencies: [{ param: "background.enabled", equals: true }],
 	},
+	{
+		key: "outline.color", label: "Outline Color", type: "color", default: "#000000",
+	},
+	{
+		key: "outline.width", label: "Outline Width", type: "number", default: 0, min: 0, max: 20, step: 0.5,
+	},
+	{
+		key: "shadow.enabled", label: "Shadow Enabled", type: "boolean", default: false, keyframable: false,
+	},
+	{
+		key: "shadow.color", label: "Shadow Color", type: "color", default: "#000000", dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
+	{
+		key: "shadow.blur", label: "Shadow Blur", type: "number", default: 12, min: 0, max: 100, step: 1, dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
+	{
+		key: "shadow.offsetX", label: "Shadow Offset X", type: "number", default: 3, min: -100, max: 100, step: 1, dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
+	{
+		key: "shadow.offsetY", label: "Shadow Offset Y", type: "number", default: 3, min: -100, max: 100, step: 1, dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
 ];
 
 export const elementParamRegistry = new DefinitionRegistry<
