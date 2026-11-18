@@ -366,6 +366,9 @@ const textElementParams: ElementParamDefinition[] = [
 	{
 		key: "gradient.angle", label: "Gradient Angle", type: "number", default: 0, min: 0, max: 360, step: 1, dependencies: [{ param: "gradient.enabled", equals: true }],
 	},
+	{
+		key: "text.reveal", label: "Text Reveal", type: "number", default: 1, min: 0, max: 1, step: 0.01,
+	},
 ];
 
 export const elementParamRegistry = new DefinitionRegistry<
