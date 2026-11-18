@@ -1,0 +1,36 @@
+name: Refresh Bun lockfile
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out XTOP Video Studio branch
+        uses: actions/checkout@v4
+        with:
+          ref: xtop-social-studio-editor
+
+      - name: Install Bun 1.2.18
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76
+        with:
+          bun-version: 1.2.18
+
+      - name: Regenerate lockfile
+        run: bun install
+
+      - name: Commit regenerated lockfile
+        run: |
+          if git diff --quiet -- bun.lock; then
+            echo "bun.lock is already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "chore: regenerate Bun lockfile"
+          git push origin HEAD:xtop-social-studio-editor
