@@ -143,6 +143,7 @@ export function Captions() {
 			dispatch({ type: "update_step", step: "Generating captions..." });
 			const captionChunks = buildCaptionChunks({
 				segments: result.segments,
+				words: result.words,
 				wordsPerChunk: Number(wordsPerCaption),
 			});
 
@@ -326,7 +327,7 @@ export function Captions() {
 						</SectionField>
 					</SectionFields>
 					<p className="text-muted-foreground text-xs">
-						Word timing is estimated evenly within each detected speech segment; precise word-level alignment is not yet available.
+						Uses Whisper's model-provided word timestamps when available; falls back to estimated timing if word timestamps are missing. Timing may still need manual review.
 					</p>
 
 					<Button
