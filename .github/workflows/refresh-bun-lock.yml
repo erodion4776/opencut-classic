@@ -20,8 +20,11 @@ jobs:
         with:
           bun-version: 1.4.4
 
-      - name: Regenerate lockfile
-        run: bun install
+      - name: Regenerate lockfile from a clean resolution
+        run: |
+          rm -f bun.lock
+          rm -rf node_modules apps/*/node_modules packages/*/node_modules
+          bun install
 
       - name: Commit regenerated lockfile
         run: |
