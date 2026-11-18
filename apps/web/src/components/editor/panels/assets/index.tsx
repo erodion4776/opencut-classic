@@ -13,6 +13,7 @@ import { AdjustmentView } from "./views/adjustment";
 import { TransitionsView } from "./views/transitions";
 import { TextAnimationsView } from "./views/text-animations";
 import { TextStudioView } from "./views/text-studio";
+import { AudioStudioView } from "./views/audio-studio";
 
 export function AssetsPanel() {
 	const { activeTab } = useAssetsPanelStore();
@@ -28,6 +29,7 @@ export function AssetsPanel() {
 		captions: <Captions />,
 		adjustment: <AdjustmentView />,
 		"text-studio": <TextStudioView />,
+		"audio-studio": <AudioStudioView />,
 		settings: <SettingsView />,
 	};
 
