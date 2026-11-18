@@ -23,6 +23,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - **Text motion:** the Text Motion panel adds Fade Up, Pop In, Slide From Left, and Slide From Right presets to one selected text clip. Presets write native opacity and transform keyframes, preserve existing base values, and refuse to overwrite any affected animation channel. These are linear entrance animations; animated exits, per-word/typewriter reveals, and custom easing presets are not included yet.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** the starter library now includes Gaussian Blur, Color Adjust, Sepia, Black & White, and Vignette. These additions have source-level renderer wiring but still require compilation and preview/export verification.
+- **Caption styling:** the Captions panel now includes Classic, Creator Bold, Yellow Highlight, and Soft Box presets. Applying a preset updates the selected text/subtitle clips through the existing timeline update command; multi-selection is supported and non-text selections are left unchanged. These are whole-clip styles, not word-by-word highlighting or animated karaoke captions. Fine-grained styling remains available through the existing Text properties tab.
 - **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
 
 ## XTOP build sequence
@@ -38,7 +39,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Extend transitions with overlap-aware crossfades and timeline transition handles only after adding a dedicated transition model, editing operations, serialization, and renderer support.
 - Extend color grading only with persisted parameters consumed by both preview and export; do not add decorative controls.
 - Expand effects only with actual renderer-backed effects and editable parameters.
-- Add subtitle styling and timing controls only where the subtitle engine supports them.
+- Expand subtitle styling with per-word highlighting and timing controls only after word-level timing and renderer support are implemented.
 - Keep every control connected to project state; avoid decorative controls that do not change the output.
 
 ### Stage 3 — Social publishing handoff
@@ -50,7 +51,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Acceptance checklist
 
 - [ ] Android Chrome: create/open a project and import local media.
-- [ ] Android Chrome: edit text/captions and use the timeline without horizontal page overflow.
+- [ ] Android Chrome: edit text/captions, apply caption style presets, and use the timeline without horizontal page overflow.
 - [ ] Desktop: resize panels and use the timeline.
 - [ ] Save, close, and reopen a project without losing edits.
 - [ ] Verify transform, blending, and Gaussian Blur edits persist and affect preview/export.
