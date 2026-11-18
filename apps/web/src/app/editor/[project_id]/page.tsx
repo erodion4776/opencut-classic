@@ -17,7 +17,7 @@ import { MigrationDialog } from "@/project/components/migration-dialog";
 import { usePanelStore } from "@/editor/panel-store";
 import { usePasteMedia } from "@/media/use-paste-media";
 import { MobileGate } from "@/components/editor/mobile-gate";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -81,6 +81,16 @@ function DegradedRendererBanner() {
 function EditorLayout() {
 	usePasteMedia();
 	const { panels, setPanel } = usePanelStore();
+	const [isMobile, setIsMobile] = useState(false);
+	const [mobilePanel, setMobilePanel] = useState<"media" | "preview" | "properties">("preview");
+
+	useEffect(() => {
+		const mediaQuery = window.matchMedia("(max-width: 767px)");
+		const updateViewport = () => setIsMobile(mediaQuery.matches);
+		updateViewport();
+		mediaQuery.addEventListener("change", updateViewport);
+		return () => mediaQuery.removeEventListener("change", updateViewport);
+	}, []);
 	const activeScene = useEditor((editor) =>
 		editor.scenes.getActiveSceneOrNull(),
 	);
@@ -124,6 +134,46 @@ function EditorLayout() {
 			),
 		[overlaySource.definitions, overlays],
 	);
+
+	if (isMobile) {
+		return (
+			<div className="flex h-full min-h-0 flex-col gap-2 px-2 pb-2">
+				<div className="grid grid-cols-3 gap-1 rounded-lg border bg-background p-1">
+					{([
+						["media", "Media & tools"],
+						["preview", "Preview"],
+						["properties", "Properties"],
+					] as const).map(([panel, label]) => (
+						<Button
+							key={panel}
+							type="button"
+							variant={mobilePanel === panel ? "default" : "ghost"}
+							size="sm"
+							className="min-w-0 px-1 text-xs"
+							aria-pressed={mobilePanel === panel}
+							onClick={() => setMobilePanel(panel)}
+						>
+							{label}
+						</Button>
+					))}
+				</div>
+				<div className="min-h-0 flex-1 overflow-hidden rounded-md">
+					{mobilePanel === "media" && <AssetsPanel />}
+					{mobilePanel === "preview" && (
+						<PreviewPanel
+							overlayControls={overlayControls}
+							overlayInstances={overlaySource.instances}
+							onOverlayVisibilityChange={setOverlayVisibility}
+						/>
+					)}
+					{mobilePanel === "properties" && <PropertiesPanel />}
+				</div>
+				<div className="h-[42%] min-h-[190px] shrink-0 overflow-hidden rounded-md border px-1 pb-1">
+					<Timeline />
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<ResizablePanelGroup
