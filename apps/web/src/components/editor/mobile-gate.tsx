@@ -52,9 +52,7 @@ export function MobileGate({ children }: MobileGateProps) {
 						Mobile experience in progress
 					</h1>
 					<p className="text-muted-foreground text-sm leading-relaxed">
-						XTOP Video Studio is still being optimized for mobile and tablet screens. Things will break
-						and the layout will be a mess. Come back on a desktop for the real
-						experience.
+						The editing workspace is currently designed for larger screens. You can still preview it on your phone, but some controls may be difficult to use.
 					</p>
 				</div>
 				<div className="flex items-center gap-3">
