@@ -60,6 +60,12 @@ export function renderTextToContext({
 		shadowBlur: Number(node.params.params["shadow.blur"] ?? 0),
 		shadowOffsetX: Number(node.params.params["shadow.offsetX"] ?? 0),
 		shadowOffsetY: Number(node.params.params["shadow.offsetY"] ?? 0),
+		glowColor: Boolean(node.params.params["glow.enabled"]) ? String(node.params.params["glow.color"] ?? "#00e5ff") : "transparent",
+		glowBlur: Number(node.params.params["glow.blur"] ?? 0),
+		gradientEnabled: Boolean(node.params.params["gradient.enabled"]),
+		gradientStart: String(node.params.params["gradient.start"] ?? "#ff4d8d"),
+		gradientEnd: String(node.params.params["gradient.end"] ?? "#7c4dff"),
+		gradientAngle: Number(node.params.params["gradient.angle"] ?? 0),
 		textBaseline: baseline,
 	});
 
