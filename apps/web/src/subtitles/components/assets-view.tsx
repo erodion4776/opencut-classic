@@ -14,7 +14,6 @@ import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/transcription/diagnostics";
 import { DEFAULT_TRANSCRIPTION_SAMPLE_RATE } from "@/transcription/audio";
 import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
 import type {
-	SubtitleCue,
 	TranscriptionLanguage,
 	TranscriptionProgress,
 } from "@/transcription/types";
