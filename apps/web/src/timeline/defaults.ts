@@ -67,6 +67,7 @@ const defaultTextElement: Omit<TextElement, "id"> = {
 		"gradient.start": "#ff4d8d",
 		"gradient.end": "#7c4dff",
 		"gradient.angle": 0,
+		"text.reveal": 1,
 		"transform.positionX": defaultTransform.position.x,
 		"transform.positionY": defaultTransform.position.y,
 		"transform.scaleX": defaultTransform.scaleX,
