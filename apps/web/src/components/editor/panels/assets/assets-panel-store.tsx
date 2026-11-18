@@ -29,6 +29,7 @@ export const TAB_KEYS = [
 	"text-studio",
 	"audio-studio",
 	"smart-cut",
+	"scene-studio",
 	"settings",
 ] as const;
 
@@ -88,6 +89,10 @@ export const tabs = {
 	"smart-cut": {
 		icon: createHugeiconsIcon({ icon: MagicWand05Icon }),
 		label: "Smart Cut",
+	},
+	"scene-studio": {
+		icon: createHugeiconsIcon({ icon: MagicWand05Icon }),
+		label: "Scene Studio",
 	},
 	settings: {
 		icon: createHugeiconsIcon({ icon: Settings01Icon }),
