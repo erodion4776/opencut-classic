@@ -1,6 +1,6 @@
 # XTOP Social Studio — Editor Feature Status
 
-This document records the editor capabilities verified in the `xtop-social-studio-editor` branch and separates working inherited OpenCut modules from unfinished placeholders. It is a development checklist, not a claim that every feature has been tested in production.
+This document records the editor capabilities present in the `xtop-social-studio-editor` branch and separates connected controls from unfinished work. It is a development checklist, not a claim that every feature has been tested in production.
 
 ## Existing editor foundation
 
@@ -9,7 +9,8 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Project-based editor shell with an editor provider.
 - Resizable desktop workspace with media/tools, preview, properties, and timeline areas.
 - Compact mobile workspace with Media & tools, Preview, and Properties tabs, plus a persistent timeline area.
-- Media, sounds, text, stickers, effects, captions, and settings asset-panel entries.
+- Media, sounds, text, stickers, effects, captions, settings, and a selected-clip adjustment panel.
+- The adjustment panel reuses the existing clip property controls for transform (position, scale, rotation) and blending (opacity and blend mode). It requires a single selected timeline clip; it does not claim brightness, contrast, or saturation grading.
 - Existing caption panel is wired to the subtitles module (`@/subtitles/components/assets-view`).
 - Existing export dialog supports the formats and quality controls implemented by the upstream export engine.
 - Project rename, exit, delete, onboarding, and migration flows remain part of the editor.
@@ -33,7 +34,7 @@ Do not present either as implemented until the corresponding editing controls ar
 
 ### Stage 2 — Creator controls
 - Implement a transitions browser backed by real timeline transition operations.
-- Implement adjustment controls backed by the selected clip's persisted properties (brightness, contrast, saturation, and other supported parameters).
+- Extend adjustment controls only when the rendering and timeline model expose real persisted color parameters (brightness, contrast, saturation, etc.).
 - Add subtitle styling and timing controls only where the subtitle engine supports them.
 - Keep every control connected to project state; avoid decorative controls that do not change the output.
 
