@@ -69,7 +69,6 @@ export function TabBar() {
 								>
 									<tab.icon />
 									<span className="text-[10px] leading-none md:hidden">{tab.label}</span>
-									<span className="text-[10px] leading-none md:hidden">{tab.label}</span>
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent
