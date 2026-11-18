@@ -19,7 +19,8 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 
 ## Confirmed unfinished areas
 
-- **Transitions:** the Transitions panel now applies Fade In, Fade Out, and Fade In + Out presets to one selected visual clip using native persisted opacity keyframes. It protects clips that already have opacity keyframes. This first step does not implement overlapping-clip crossfades, transition handles, or a general transition model.
+- **Transitions:** the Transitions panel applies Fade In, Fade Out, and Fade In + Out presets to one selected visual clip using native persisted opacity keyframes. It protects clips that already have opacity keyframes. This first step does not implement overlapping-clip crossfades, transition handles, or a general transition model.
+- **Text motion:** the Text Motion panel adds Fade Up, Pop In, Slide From Left, and Slide From Right presets to one selected text clip. Presets write native opacity and transform keyframes, preserve existing base values, and refuse to overwrite any affected animation channel. These are linear entrance animations; animated exits, per-word/typewriter reveals, and custom easing presets are not included yet.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** the starter library now includes Gaussian Blur, Color Adjust, Sepia, Black & White, and Vignette. These additions have source-level renderer wiring but still require compilation and preview/export verification.
 - **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
