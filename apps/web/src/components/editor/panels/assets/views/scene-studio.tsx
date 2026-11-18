@@ -47,7 +47,7 @@ async function detectCuts(file: File, sourceStart: number, duration: number, thr
   const cuts: SceneCut[] = [];
   const sampleCount = Math.max(1, Math.floor((end - sourceStart) / sampleStep));
   for (let index = 0; index <= sampleCount; index++) {
-   const time = Math.min(end - 0.05, sourceStart + index * sampleStep);
+   const time = Math.min(end - 0.05, Math.max(sourceStart + 0.05, sourceStart + index * sampleStep));
    if (time < 0 || time >= end) continue;
    const seekComplete = waitFor("seeked");
    video.currentTime = time;
