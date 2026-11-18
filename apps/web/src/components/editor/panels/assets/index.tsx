@@ -11,6 +11,7 @@ import { TextView } from "@/text/components/assets-view";
 import { EffectsView } from "@/effects/components/assets-view";
 import { AdjustmentView } from "./views/adjustment";
 import { TransitionsView } from "./views/transitions";
+import { TextAnimationsView } from "./views/text-animations";
 
 export function AssetsPanel() {
 	const { activeTab } = useAssetsPanelStore();
@@ -22,6 +23,7 @@ export function AssetsPanel() {
 		stickers: <StickersView />,
 		effects: <EffectsView />,
 		transitions: <TransitionsView />,
+		"text-animations": <TextAnimationsView />,
 		captions: <Captions />,
 		adjustment: <AdjustmentView />,
 		settings: <SettingsView />,
