@@ -27,6 +27,7 @@ export const TAB_KEYS = [
 	"captions",
 	"adjustment",
 	"text-studio",
+	"audio-studio",
 	"settings",
 ] as const;
 
@@ -78,6 +79,10 @@ export const tabs = {
 	"text-studio": {
 		icon: createHugeiconsIcon({ icon: TextFontIcon }),
 		label: "Text Studio",
+	},
+	"audio-studio": {
+		icon: createHugeiconsIcon({ icon: HeadphonesIcon }),
+		label: "Audio Studio",
 	},
 	settings: {
 		icon: createHugeiconsIcon({ icon: Settings01Icon }),
