@@ -31,4 +31,8 @@ const botProtectedConfig = withBotId(
 	nextConfig as unknown as Parameters<typeof withBotId>[0],
 );
 
-export default withContentCollections(botProtectedConfig as unknown as NextConfig);
+// Content Collections resolves the root Next.js type, while this app resolves
+// its own Next.js copy. Bridge the duplicate type identity at this boundary.
+export default withContentCollections(
+	botProtectedConfig as unknown as Parameters<typeof withContentCollections>[0],
+);
