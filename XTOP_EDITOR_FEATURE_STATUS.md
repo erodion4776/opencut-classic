@@ -19,7 +19,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 
 ## Confirmed unfinished areas
 
-- **Transitions:** the asset-panel tab still displays “Transitions view coming soon...”. No XTOP transitions browser or verified transition workflow has been added.
+- **Transitions:** the Transitions panel now applies Fade In, Fade Out, and Fade In + Out presets to one selected visual clip using native persisted opacity keyframes. It protects clips that already have opacity keyframes. This first step does not implement overlapping-clip crossfades, transition handles, or a general transition model.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** only the registered upstream Gaussian Blur effect is currently confirmed in the default effect definitions. Additional effects require real shader/renderer support and persisted parameters.
 - **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
@@ -30,11 +30,11 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Verify importing video, audio, and image assets on Android Chrome and desktop browsers.
 - Verify adding text and captions to the timeline, selecting them, editing their properties, and saving/reopening the project.
 - Verify trimming, splitting, moving, and deleting timeline clips.
-- Verify visual clip transform, blending, Gaussian Blur, and Color Adjust (brightness, contrast, saturation, temperature) controls persist and render correctly.
+- Verify visual clip transform, blending, Gaussian Blur, Color Adjust, and Fade In/Out keyframes persist and render correctly.
 - Verify export completion, downloaded file integrity, and error handling.
 
 ### Stage 2 — Creator controls
-- Implement a transitions browser only after the timeline model, editing operations, serialization, and renderer support a real transition representation.
+- Extend transitions with overlap-aware crossfades and timeline transition handles only after adding a dedicated transition model, editing operations, serialization, and renderer support.
 - Extend color grading only with persisted parameters consumed by both preview and export; do not add decorative controls.
 - Expand effects only with actual renderer-backed effects and editable parameters.
 - Add subtitle styling and timing controls only where the subtitle engine supports them.
