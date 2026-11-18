@@ -2,20 +2,13 @@
 
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import { Handlebars } from "./handlebars";
 import Link from "next/link";
 
 export function Hero() {
 	return (
 		<div className="flex min-h-[calc(100svh-4.5rem)] flex-col items-center justify-between px-4 text-center">
-			<Image
-				className="absolute top-0 left-0 -z-50 size-full object-cover opacity-85 invert dark:invert-0"
-				src="/landing-page-dark.png"
-				height={1903.5}
-				width={1269}
-				alt="XTOP Video Studio video editor workspace"
-			/>
+			<div className="absolute inset-0 -z-50 bg-gradient-to-br from-violet-950/70 via-background to-cyan-950/50" />
 			<div className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center">
 				<div className="inline-block text-4xl font-bold tracking-tighter md:text-[4rem]">
 					<h1>Create videos with</h1>
