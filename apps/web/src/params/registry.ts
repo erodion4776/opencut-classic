@@ -345,6 +345,27 @@ const textElementParams: ElementParamDefinition[] = [
 	{
 		key: "shadow.offsetY", label: "Shadow Offset Y", type: "number", default: 3, min: -100, max: 100, step: 1, dependencies: [{ param: "shadow.enabled", equals: true }],
 	},
+	{
+		key: "glow.enabled", label: "Neon Glow Enabled", type: "boolean", default: false, keyframable: false,
+	},
+	{
+		key: "glow.color", label: "Glow Color", type: "color", default: "#00e5ff", dependencies: [{ param: "glow.enabled", equals: true }],
+	},
+	{
+		key: "glow.blur", label: "Glow Strength", type: "number", default: 18, min: 0, max: 100, step: 1, dependencies: [{ param: "glow.enabled", equals: true }],
+	},
+	{
+		key: "gradient.enabled", label: "Gradient Text Enabled", type: "boolean", default: false, keyframable: false,
+	},
+	{
+		key: "gradient.start", label: "Gradient Start Color", type: "color", default: "#ff4d8d", dependencies: [{ param: "gradient.enabled", equals: true }],
+	},
+	{
+		key: "gradient.end", label: "Gradient End Color", type: "color", default: "#7c4dff", dependencies: [{ param: "gradient.enabled", equals: true }],
+	},
+	{
+		key: "gradient.angle", label: "Gradient Angle", type: "number", default: 0, min: 0, max: 360, step: 1, dependencies: [{ param: "gradient.enabled", equals: true }],
+	},
 ];
 
 export const elementParamRegistry = new DefinitionRegistry<
