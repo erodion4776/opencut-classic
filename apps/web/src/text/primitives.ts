@@ -150,6 +150,12 @@ export function drawMeasuredTextLayout({
 	shadowBlur = 0,
 	shadowOffsetX = 0,
 	shadowOffsetY = 0,
+	glowColor = "transparent",
+	glowBlur = 0,
+	gradientEnabled = false,
+	gradientStart = "#ff4d8d",
+	gradientEnd = "#7c4dff",
+	gradientAngle = 0,
 	textBaseline = "middle",
 }: {
 	ctx: TextCanvasContext;
@@ -163,12 +169,31 @@ export function drawMeasuredTextLayout({
 	shadowBlur?: number;
 	shadowOffsetX?: number;
 	shadowOffsetY?: number;
+	glowColor?: string;
+	glowBlur?: number;
+	gradientEnabled?: boolean;
+	gradientStart?: string;
+	gradientEnd?: string;
+	gradientAngle?: number;
 	textBaseline?: CanvasTextBaseline;
 }): void {
 	ctx.font = layout.fontString;
 	ctx.textAlign = layout.textAlign;
 	ctx.textBaseline = textBaseline;
-	ctx.fillStyle = textColor;
+	let resolvedTextColor: string | CanvasGradient = textColor;
+	if (gradientEnabled && layout.block.maxWidth > 0 && layout.block.height > 0) {
+		const angle = (gradientAngle * Math.PI) / 180;
+		const halfWidth = layout.block.maxWidth / 2;
+		const halfHeight = layout.block.height / 2;
+		const dx = Math.cos(angle) * (Math.abs(Math.cos(angle)) * halfWidth + Math.abs(Math.sin(angle)) * halfHeight);
+		const dy = Math.sin(angle) * (Math.abs(Math.cos(angle)) * halfWidth + Math.abs(Math.sin(angle)) * halfHeight);
+		const centerX = layout.textAlign === "left" ? halfWidth : layout.textAlign === "right" ? -halfWidth : 0;
+		const gradient = ctx.createLinearGradient(centerX - dx, -dy, centerX + dx, dy);
+		gradient.addColorStop(0, gradientStart);
+		gradient.addColorStop(1, gradientEnd);
+		resolvedTextColor = gradient;
+	}
+	ctx.fillStyle = resolvedTextColor;
 	setCanvasLetterSpacing({ ctx, letterSpacingPx: layout.letterSpacing });
 
 	if (
@@ -216,6 +241,13 @@ export function drawMeasuredTextLayout({
 			ctx.lineWidth = outlineWidth;
 			ctx.lineJoin = "round";
 			ctx.strokeText(layout.lines[index], 0, lineY);
+		}
+		if (glowBlur > 0 && glowColor !== "transparent") {
+			ctx.shadowColor = glowColor;
+			ctx.shadowBlur = glowBlur;
+			ctx.shadowOffsetX = 0;
+			ctx.shadowOffsetY = 0;
+			ctx.fillText(layout.lines[index], 0, lineY);
 		}
 		ctx.shadowColor = shadowColor;
 		ctx.shadowBlur = shadowBlur;
