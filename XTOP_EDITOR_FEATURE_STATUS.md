@@ -1,6 +1,6 @@
 # XTOP Social Studio — Editor Feature Status
 
-This document records the editor capabilities present in the `xtop-social-studio-editor` branch and separates connected controls from unfinished work. It is a development checklist, not a claim that every feature has been tested in production.
+This document records capabilities present in the `xtop-social-studio-editor` branch. It distinguishes connected controls from unfinished work; it is not a claim that the app has passed a production build or device QA.
 
 ## Existing editor foundation
 
@@ -10,19 +10,19 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Resizable desktop workspace with media/tools, preview, properties, and timeline areas.
 - Compact mobile workspace with Media & tools, Preview, and Properties tabs, plus a persistent timeline area.
 - Media, sounds, text, stickers, effects, captions, settings, and a selected-clip adjustment panel.
-- The adjustment panel reuses the existing clip property controls for transform (position, scale, rotation), blending (opacity and blend mode), and the existing clip-effects editor. It requires a single selected timeline clip. Effects currently available are those registered by the upstream effects engine; brightness, contrast, and saturation grading are not yet implemented.
-- Existing caption panel is wired to the subtitles module (`@/subtitles/components/assets-view`).
-- Existing export dialog supports the formats and quality controls implemented by the upstream export engine.
+- The Adjustment panel is connected to the existing property registry. For a single selected visual clip it exposes the available transform controls (position, scale, rotation), blending controls (opacity and blend mode), and clip-effects editor. It does not create a parallel editing model.
+- The current default effect registry contains one effect: Gaussian Blur, with an intensity parameter. Do not describe this as a large CapCut-style effects library.
+- Audio clips use their existing Audio and Speed property controls in the Properties panel; they do not currently expose the visual Adjustment panel's transform/blending/effects groups.
+- The existing caption panel is wired to the subtitles module (`@/subtitles/components/assets-view`).
+- The existing export dialog supports the formats and quality controls implemented by the upstream export engine.
 - Project rename, exit, delete, onboarding, and migration flows remain part of the editor.
 
 ## Confirmed unfinished areas
 
-The asset-panel switch currently renders placeholder copy for:
-
-- **Transitions:** “Transitions view coming soon...”
-- **Adjustment:** “Adjustment view coming soon...”
-
-Do not present either as implemented until the corresponding editing controls are connected to the project/timeline model and verified.
+- **Transitions:** the asset-panel tab still displays “Transitions view coming soon...”. No XTOP transitions browser or verified transition workflow has been added.
+- **Color grading:** brightness, contrast, saturation, temperature, tint, and similar grading controls are not implemented as persisted renderer-backed controls.
+- **Effects library:** only the registered upstream Gaussian Blur effect is currently confirmed in the default effect definitions. Additional effects require real shader/renderer support and persisted parameters.
+- **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
 
 ## XTOP build sequence
 
@@ -30,11 +30,13 @@ Do not present either as implemented until the corresponding editing controls ar
 - Verify importing video, audio, and image assets on Android Chrome and desktop browsers.
 - Verify adding text and captions to the timeline, selecting them, editing their properties, and saving/reopening the project.
 - Verify trimming, splitting, moving, and deleting timeline clips.
+- Verify visual clip transform, blending, and blur effect controls persist and render correctly.
 - Verify export completion, downloaded file integrity, and error handling.
 
 ### Stage 2 — Creator controls
-- Implement a transitions browser backed by real timeline transition operations and renderer support.
-- Extend adjustment controls only when the rendering and timeline model expose real persisted color parameters (brightness, contrast, saturation, etc.).
+- Implement a transitions browser only after the timeline model, editing operations, serialization, and renderer support a real transition representation.
+- Implement color grading only when color parameters are persisted in the project model and consumed by the render/export pipeline.
+- Expand effects only with actual renderer-backed effects and editable parameters.
 - Add subtitle styling and timing controls only where the subtitle engine supports them.
 - Keep every control connected to project state; avoid decorative controls that do not change the output.
 
@@ -50,6 +52,7 @@ Do not present either as implemented until the corresponding editing controls ar
 - [ ] Android Chrome: edit text/captions and use the timeline without horizontal page overflow.
 - [ ] Desktop: resize panels and use the timeline.
 - [ ] Save, close, and reopen a project without losing edits.
+- [ ] Verify transform, blending, and Gaussian Blur edits persist and affect preview/export.
 - [ ] Export MP4 and verify the resulting file plays.
 - [ ] Export failures are surfaced clearly and do not report false success.
 - [ ] Publisher upload and composer selection are verified end-to-end.
