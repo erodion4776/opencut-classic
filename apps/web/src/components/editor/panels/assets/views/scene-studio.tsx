@@ -49,8 +49,9 @@ async function detectCuts(file: File, sourceStart: number, duration: number, thr
   for (let index = 0; index <= sampleCount; index++) {
    const time = Math.min(end - 0.05, sourceStart + index * sampleStep);
    if (time < 0 || time >= end) continue;
+   const seekComplete = waitFor("seeked");
    video.currentTime = time;
-   await waitFor("seeked");
+   await seekComplete;
    context.drawImage(video, 0, 0, canvas.width, canvas.height);
    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
    if (previous) {
