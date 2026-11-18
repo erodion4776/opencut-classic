@@ -22,6 +22,7 @@ export const TAB_KEYS = [
 	"stickers",
 	"effects",
 	"transitions",
+	"text-animations",
 	"captions",
 	"adjustment",
 	"settings",
@@ -59,6 +60,10 @@ export const tabs = {
 	transitions: {
 		icon: createHugeiconsIcon({ icon: ArrowRightDoubleIcon }),
 		label: "Transitions",
+	},
+	"text-animations": {
+		icon: createHugeiconsIcon({ icon: TextIcon }),
+		label: "Text Motion",
 	},
 	captions: {
 		icon: createHugeiconsIcon({ icon: ClosedCaptionIcon }),
