@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { RiDiscordFill, RiTwitterXLine } from "react-icons/ri";
 import { FaGithub } from "react-icons/fa6";
 import Image from "next/image";
 import { DEFAULT_LOGO_URL } from "@/site/brand";
@@ -57,24 +56,9 @@ export function Footer() {
 								className="text-muted-foreground hover:text-foreground transition-colors"
 								target="_blank"
 								rel="noopener noreferrer"
+								aria-label="XTOP Video Studio source code"
 							>
 								<FaGithub className="size-5" />
-							</Link>
-							<Link
-								href={SOCIAL_LINKS.x}
-								className="text-muted-foreground hover:text-foreground transition-colors"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<RiTwitterXLine className="size-5" />
-							</Link>
-							<Link
-								href={SOCIAL_LINKS.discord}
-								className="text-muted-foreground hover:text-foreground transition-colors"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<RiDiscordFill className="size-5" />
 							</Link>
 						</div>
 					</div>
