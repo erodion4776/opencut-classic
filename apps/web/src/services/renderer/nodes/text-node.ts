@@ -66,6 +66,7 @@ export function renderTextToContext({
 		gradientStart: String(node.params.params["gradient.start"] ?? "#ff4d8d"),
 		gradientEnd: String(node.params.params["gradient.end"] ?? "#7c4dff"),
 		gradientAngle: Number(node.params.params["gradient.angle"] ?? 0),
+		reveal: Number(node.params.params["text.reveal"] ?? 1),
 		textBaseline: baseline,
 	});
 
