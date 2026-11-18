@@ -92,7 +92,7 @@ export const tabs = {
 	},
 	"scene-studio": {
 		icon: createHugeiconsIcon({ icon: MagicWand05Icon }),
-		label: "Scene Studio",
+		label: "Scene + Highlights",
 	},
 	settings: {
 		icon: createHugeiconsIcon({ icon: Settings01Icon }),
