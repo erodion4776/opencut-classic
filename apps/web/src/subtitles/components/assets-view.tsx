@@ -14,14 +14,15 @@ import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/transcription/diagnostics";
 import { DEFAULT_TRANSCRIPTION_SAMPLE_RATE } from "@/transcription/audio";
 import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
 import type {
-	CaptionChunk,
+	SubtitleCue,
 	TranscriptionLanguage,
 	TranscriptionProgress,
 } from "@/transcription/types";
+import type { SubtitleCue } from "@/subtitles/types";
 import { transcriptionService } from "@/services/transcription/service";
 import { decodeAudioToFloat32 } from "@/media/audio";
-import { buildCaptionChunks } from "@/transcription/caption";
-import { insertCaptionChunksAsTextTrack } from "@/subtitles/insert";
+import { buildSubtitleCues } from "@/transcription/caption";
+import { insertSubtitleCuesAsTextTrack } from "@/subtitles/insert";
 import { parseSubtitleFile } from "@/subtitles/parse";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -113,9 +114,9 @@ export function Captions() {
 	const insertCaptions = ({
 		captions,
 	}: {
-		captions: CaptionChunk[];
+		captions: SubtitleCue[];
 	}): boolean => {
-		const trackId = insertCaptionChunksAsTextTrack({ editor, captions });
+		const trackId = insertSubtitleCuesAsTextTrack({ editor, captions });
 		return trackId !== null;
 	};
 
@@ -141,13 +142,27 @@ export function Captions() {
 			});
 
 			dispatch({ type: "update_step", step: "Generating captions..." });
-			const captionChunks = buildCaptionChunks({
+			const captionChunks = buildSubtitleCues({
 				segments: result.segments,
 				words: result.words,
 				wordsPerChunk: Number(wordsPerCaption),
 			});
 
-			if (!insertCaptions({ captions: captionChunks })) {
+			const styledCaptions: SubtitleCue[] = captionChunks.map((caption) => ({
+				...caption,
+				...(wordsPerCaption === "1"
+					? {
+							style: {
+								color: "#ffe34d",
+								fontWeight: "bold",
+								fontSize: 6,
+								textAlign: "center",
+							},
+						}
+					: {}),
+			}));
+
+			if (!insertCaptions({ captions: styledCaptions })) {
 				dispatch({ type: "fail", error: "No captions were generated" });
 				return;
 			}
@@ -327,7 +342,7 @@ export function Captions() {
 						</SectionField>
 					</SectionFields>
 					<p className="text-muted-foreground text-xs">
-						Uses Whisper's model-provided word timestamps when available; falls back to estimated timing if word timestamps are missing. Timing may still need manual review.
+						Uses Whisper word timestamps when available. In Word by word mode, each timed word appears as a bold yellow karaoke highlight; grouped modes retain regular caption styling. Timing may still need manual review.
 					</p>
 
 					<Button
