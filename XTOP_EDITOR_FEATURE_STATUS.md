@@ -11,7 +11,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Compact mobile workspace with Media & tools, Preview, and Properties tabs, plus a persistent timeline area.
 - Media, sounds, text, stickers, effects, captions, settings, and a selected-clip adjustment panel.
 - The Adjustment panel is connected to the existing property registry. For a single selected visual clip it exposes the available transform controls (position, scale, rotation), blending controls (opacity and blend mode), and clip-effects editor. It does not create a parallel editing model.
-- The default effect registry includes Gaussian Blur and XTOP Color Adjust. Color Adjust exposes persisted brightness, contrast, saturation, and temperature parameters through the existing clip-effects controls; its WGSL shader is registered in the Rust GPU effects pipeline used by the renderer. This is a small starter library, not a large CapCut-style effects collection.
+- The default effect registry includes Gaussian Blur, XTOP Color Adjust, Sepia, Black & White, and Vignette. These effects expose persisted parameters through the existing clip-effects controls and use WGSL shaders registered in the Rust GPU effects pipeline. This is a small starter library, not a large CapCut-style effects collection.
 - Audio clips use their existing Audio and Speed property controls in the Properties panel; they do not currently expose the visual Adjustment panel's transform/blending/effects groups.
 - The existing caption panel is wired to the subtitles module (`@/subtitles/components/assets-view`).
 - The existing export dialog supports the formats and quality controls implemented by the upstream export engine.
@@ -21,7 +21,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 
 - **Transitions:** the Transitions panel now applies Fade In, Fade Out, and Fade In + Out presets to one selected visual clip using native persisted opacity keyframes. It protects clips that already have opacity keyframes. This first step does not implement overlapping-clip crossfades, transition handles, or a general transition model.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
-- **Effects library:** only the registered upstream Gaussian Blur effect is currently confirmed in the default effect definitions. Additional effects require real shader/renderer support and persisted parameters.
+- **Effects library:** the starter library now includes Gaussian Blur, Color Adjust, Sepia, Black & White, and Vignette. These additions have source-level renderer wiring but still require compilation and preview/export verification.
 - **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
 
 ## XTOP build sequence
