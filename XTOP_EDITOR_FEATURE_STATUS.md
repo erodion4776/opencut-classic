@@ -9,7 +9,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Project-based editor shell with an editor provider.
 - Resizable desktop workspace with media/tools, preview, properties, and timeline areas.
 - Compact mobile workspace with Media & tools, Preview, and Properties tabs, plus a persistent timeline area.
-- Media, sounds, text, stickers, effects, captions, settings, and a selected-clip adjustment panel.
+- Media, sounds, text, stickers, effects, captions, settings, Audio Studio, Text Studio, Text Motion, and selected-clip adjustment panels.
 - The Adjustment panel is connected to the existing property registry. For a single selected visual clip it exposes the available transform controls (position, scale, rotation), blending controls (opacity and blend mode), and clip-effects editor. It does not create a parallel editing model.
 - The default effect registry includes Gaussian Blur, XTOP Color Adjust, Sepia, Black & White, and Vignette. These effects expose persisted parameters through the existing clip-effects controls and use WGSL shaders registered in the Rust GPU effects pipeline. This is a small starter library, not a large CapCut-style effects collection.
 - Audio clips use their existing Audio and Speed property controls in the Properties panel; they do not currently expose the visual Adjustment panel's transform/blending/effects groups.
@@ -20,6 +20,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Confirmed unfinished areas
 
 - **Transitions:** the Transitions panel applies Fade In, Fade Out, and Fade In + Out presets to one selected visual clip using native persisted opacity keyframes. It protects clips that already have opacity keyframes. This first step does not implement overlapping-clip crossfades, transition handles, or a general transition model.
+- **Audio Studio:** a dedicated tab for one selected audio clip reuses the existing Audio and Speed property controls, displays a sampled waveform when decoded audio buffer data is available, and applies Fade In, Fade Out, or Fade In + Out through native volume keyframes. Fade lengths are selectable (0.25, 0.5, 1, or 2 seconds) and capped at half the clip duration. Existing volume animation is protected. This is not a standalone multitrack audio workstation: voiceover recording, noise reduction, EQ, compression, audio ducking, waveform trimming handles, and advanced mixing are not included.
 - **Text motion:** the Text Motion panel adds entrance presets for Fade Up, Pop In, Slide From Left/Right, Typewriter, Bounce In, Zoom In, and Rotate In, plus exit presets for Fade Out, Zoom Out, Slide Down, and Rotate Out. Presets write native opacity/transform keyframes; Typewriter animates a renderer-backed 0–1 text reveal parameter. Multi-point bounce uses intermediate keyframes. Existing animated channels are protected. Timing is linear; editable easing curves, per-character timing controls, and looping animations are not included.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** the starter library now includes Gaussian Blur, Color Adjust, Sepia, Black & White, and Vignette. These additions have source-level renderer wiring but still require compilation and preview/export verification.
@@ -38,6 +39,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Verify visual clip transform, blending, Gaussian Blur, Color Adjust, and Fade In/Out keyframes persist and render correctly.
 - Verify Text Studio font, color, background, spacing, alignment, transform, outline, shadow, gradient, and glow edits persist and render in preview/export.
 - Verify text entrance/exit presets, including typewriter reveal, bounce, zoom, and rotation, play correctly at clip boundaries and survive save/reopen.
+- Verify Audio Studio waveform rendering, volume changes, speed changes, and Fade In/Out keyframes on uploaded audio clips; save/reopen and check preview/export audio levels.
 - Verify outline thickness/color, shadow blur/offset/color, neon glow, and gradient angle/colors at multiple canvas resolutions and with multi-line text.
 - Verify export completion, downloaded file integrity, and error handling.
 
@@ -57,10 +59,11 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Acceptance checklist
 
 - [ ] Android Chrome: create/open a project and import local media.
-- [ ] Android Chrome: edit text in Text Studio, apply text entrance/exit presets including typewriter, bounce, zoom and rotation, apply caption style and entrance/exit animation presets, test one-word/three-word/five-word transcription modes, and use the timeline without horizontal page overflow.
+- [ ] Android Chrome: edit text in Text Studio, apply text entrance/exit presets including typewriter, bounce, zoom and rotation, apply caption style and entrance/exit animation presets, test one-word/three-word/five-word transcription modes, use Audio Studio on an uploaded audio clip, and use the timeline without horizontal page overflow.
 - [ ] Desktop: resize panels and use the timeline.
 - [ ] Save, close, and reopen a project without losing edits.
 - [ ] Verify transform, blending, and Gaussian Blur edits persist and affect preview/export.
+- [ ] Verify Audio Studio waveform, volume, speed and fade automation persist and affect preview/export.
 - [ ] Export MP4 and verify the resulting file plays.
 - [ ] Export failures are surfaced clearly and do not report false success.
 - [ ] Publisher upload and composer selection are verified end-to-end.
