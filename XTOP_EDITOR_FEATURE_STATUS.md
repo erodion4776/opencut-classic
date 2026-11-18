@@ -11,7 +11,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Compact mobile workspace with Media & tools, Preview, and Properties tabs, plus a persistent timeline area.
 - Media, sounds, text, stickers, effects, captions, settings, and a selected-clip adjustment panel.
 - The Adjustment panel is connected to the existing property registry. For a single selected visual clip it exposes the available transform controls (position, scale, rotation), blending controls (opacity and blend mode), and clip-effects editor. It does not create a parallel editing model.
-- The current default effect registry contains one effect: Gaussian Blur, with an intensity parameter. Do not describe this as a large CapCut-style effects library.
+- The default effect registry includes Gaussian Blur and XTOP Color Adjust. Color Adjust exposes persisted brightness, contrast, saturation, and temperature parameters through the existing clip-effects controls; its WGSL shader is registered in the Rust GPU effects pipeline used by the renderer. This is a small starter library, not a large CapCut-style effects collection.
 - Audio clips use their existing Audio and Speed property controls in the Properties panel; they do not currently expose the visual Adjustment panel's transform/blending/effects groups.
 - The existing caption panel is wired to the subtitles module (`@/subtitles/components/assets-view`).
 - The existing export dialog supports the formats and quality controls implemented by the upstream export engine.
@@ -20,7 +20,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Confirmed unfinished areas
 
 - **Transitions:** the asset-panel tab still displays “Transitions view coming soon...”. No XTOP transitions browser or verified transition workflow has been added.
-- **Color grading:** brightness, contrast, saturation, temperature, tint, and similar grading controls are not implemented as persisted renderer-backed controls.
+- **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** only the registered upstream Gaussian Blur effect is currently confirmed in the default effect definitions. Additional effects require real shader/renderer support and persisted parameters.
 - **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
 
@@ -30,12 +30,12 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Verify importing video, audio, and image assets on Android Chrome and desktop browsers.
 - Verify adding text and captions to the timeline, selecting them, editing their properties, and saving/reopening the project.
 - Verify trimming, splitting, moving, and deleting timeline clips.
-- Verify visual clip transform, blending, and blur effect controls persist and render correctly.
+- Verify visual clip transform, blending, Gaussian Blur, and Color Adjust (brightness, contrast, saturation, temperature) controls persist and render correctly.
 - Verify export completion, downloaded file integrity, and error handling.
 
 ### Stage 2 — Creator controls
 - Implement a transitions browser only after the timeline model, editing operations, serialization, and renderer support a real transition representation.
-- Implement color grading only when color parameters are persisted in the project model and consumed by the render/export pipeline.
+- Extend color grading only with persisted parameters consumed by both preview and export; do not add decorative controls.
 - Expand effects only with actual renderer-backed effects and editable parameters.
 - Add subtitle styling and timing controls only where the subtitle engine supports them.
 - Keep every control connected to project state; avoid decorative controls that do not change the output.
