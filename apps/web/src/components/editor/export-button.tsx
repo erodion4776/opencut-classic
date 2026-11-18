@@ -138,6 +138,9 @@ function ExportPopover({
 
 			editor.project.clearExportState();
 			onOpenChange(false);
+			toast.success("Video exported", {
+				description: "Your video has been downloaded. Upload it to your XTOP Social Studio publishing library when you are ready to share it.",
+			});
 		}
 	};
 
