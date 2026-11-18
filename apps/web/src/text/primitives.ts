@@ -156,6 +156,7 @@ export function drawMeasuredTextLayout({
 	gradientStart = "#ff4d8d",
 	gradientEnd = "#7c4dff",
 	gradientAngle = 0,
+	reveal = 1,
 	textBaseline = "middle",
 }: {
 	ctx: TextCanvasContext;
@@ -175,6 +176,7 @@ export function drawMeasuredTextLayout({
 	gradientStart?: string;
 	gradientEnd?: string;
 	gradientAngle?: number;
+	reveal?: number;
 	textBaseline?: CanvasTextBaseline;
 }): void {
 	ctx.font = layout.fontString;
@@ -234,20 +236,26 @@ export function drawMeasuredTextLayout({
 		}
 	}
 
+	const safeReveal = clamp({ value: reveal, min: 0, max: 1 });
+	const totalCharacters = layout.lines.reduce((total, line) => total + line.length, 0);
+	let remainingCharacters = Math.ceil(totalCharacters * safeReveal);
 	for (let index = 0; index < layout.lines.length; index++) {
 		const lineY = index * layout.lineHeightPx - layout.block.visualCenterOffset;
+		const visibleLine = layout.lines[index].slice(0, Math.max(0, Math.min(layout.lines[index].length, remainingCharacters)));
+		remainingCharacters -= layout.lines[index].length;
+		if (!visibleLine) continue;
 		if (outlineWidth > 0 && outlineColor !== "transparent") {
 			ctx.strokeStyle = outlineColor;
 			ctx.lineWidth = outlineWidth;
 			ctx.lineJoin = "round";
-			ctx.strokeText(layout.lines[index], 0, lineY);
+			ctx.strokeText(visibleLine, 0, lineY);
 		}
 		if (glowBlur > 0 && glowColor !== "transparent") {
 			ctx.shadowColor = glowColor;
 			ctx.shadowBlur = glowBlur;
 			ctx.shadowOffsetX = 0;
 			ctx.shadowOffsetY = 0;
-			ctx.fillText(layout.lines[index], 0, lineY);
+			ctx.fillText(visibleLine, 0, lineY);
 		}
 		ctx.shadowColor = shadowColor;
 		ctx.shadowBlur = shadowBlur;
@@ -261,7 +269,7 @@ export function drawMeasuredTextLayout({
 		drawTextDecoration({
 			ctx,
 			textDecoration: layout.textDecoration,
-			lineWidth: layout.lineMetrics[index].width,
+			lineWidth: ctx.measureText(visibleLine).width,
 			lineY,
 			metrics: layout.lineMetrics[index],
 			scaledFontSize: layout.scaledFontSize,
