@@ -17,7 +17,7 @@ export const baseMetaData: Metadata = {
 				url: SITE_INFO.openGraphImage,
 				width: 1200,
 				height: 630,
-				alt: "OpenCut Wordmark",
+				alt: "XTOP Video Studio",
 			},
 		],
 	},
@@ -25,7 +25,7 @@ export const baseMetaData: Metadata = {
 		card: "summary_large_image",
 		title: SITE_INFO.title,
 		description: SITE_INFO.description,
-		creator: "@opencutapp",
+		
 		images: [SITE_INFO.twitterImage],
 	},
 	pinterest: {
@@ -37,7 +37,7 @@ export const baseMetaData: Metadata = {
 	},
 	icons: {
 		icon: [
-			{ url: "/favicon.ico" },
+			{ url: "/logos/xtop-video-studio.svg", type: "image/svg+xml" },
 			{ url: "/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
 			{ url: "/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
 			{ url: "/icons/favicon-96x96.png", sizes: "96x96", type: "image/png" },
@@ -73,7 +73,7 @@ export const baseMetaData: Metadata = {
 				type: "image/png",
 			},
 		],
-		shortcut: ["/favicon.ico"],
+		shortcut: ["/logos/xtop-video-studio.svg"],
 	},
 	appleWebApp: {
 		capable: true,
