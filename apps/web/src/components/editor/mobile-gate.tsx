@@ -49,10 +49,10 @@ export function MobileGate({ children }: MobileGateProps) {
 			<div className="flex flex-1 flex-col justify-center gap-5 px-7">
 				<div className="flex flex-col gap-3">
 					<h1 className="text-foreground text-3xl font-bold tracking-tight">
-						Desktop only (for now)
+						Mobile experience in progress
 					</h1>
 					<p className="text-muted-foreground text-sm leading-relaxed">
-						OpenCut isn't optimized for mobile or iPad yet. Things will break
+						XTOP Video Studio is still being optimized for mobile and tablet screens. Things will break
 						and the layout will be a mess. Come back on a desktop for the real
 						experience.
 					</p>
