@@ -144,6 +144,12 @@ export function drawMeasuredTextLayout({
 	textColor,
 	background,
 	backgroundColor,
+	outlineColor = "transparent",
+	outlineWidth = 0,
+	shadowColor = "transparent",
+	shadowBlur = 0,
+	shadowOffsetX = 0,
+	shadowOffsetY = 0,
 	textBaseline = "middle",
 }: {
 	ctx: TextCanvasContext;
@@ -151,6 +157,12 @@ export function drawMeasuredTextLayout({
 	textColor: string;
 	background?: ResolvedTextBackgroundLike | null;
 	backgroundColor?: string;
+	outlineColor?: string;
+	outlineWidth?: number;
+	shadowColor?: string;
+	shadowBlur?: number;
+	shadowOffsetX?: number;
+	shadowOffsetY?: number;
 	textBaseline?: CanvasTextBaseline;
 }): void {
 	ctx.font = layout.fontString;
@@ -199,7 +211,21 @@ export function drawMeasuredTextLayout({
 
 	for (let index = 0; index < layout.lines.length; index++) {
 		const lineY = index * layout.lineHeightPx - layout.block.visualCenterOffset;
+		if (outlineWidth > 0 && outlineColor !== "transparent") {
+			ctx.strokeStyle = outlineColor;
+			ctx.lineWidth = outlineWidth;
+			ctx.lineJoin = "round";
+			ctx.strokeText(layout.lines[index], 0, lineY);
+		}
+		ctx.shadowColor = shadowColor;
+		ctx.shadowBlur = shadowBlur;
+		ctx.shadowOffsetX = shadowOffsetX;
+		ctx.shadowOffsetY = shadowOffsetY;
 		ctx.fillText(layout.lines[index], 0, lineY);
+		ctx.shadowColor = "transparent";
+		ctx.shadowBlur = 0;
+		ctx.shadowOffsetX = 0;
+		ctx.shadowOffsetY = 0;
 		drawTextDecoration({
 			ctx,
 			textDecoration: layout.textDecoration,
