@@ -9,7 +9,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Project-based editor shell with an editor provider.
 - Resizable desktop workspace with media/tools, preview, properties, and timeline areas.
 - Compact mobile workspace with Media & tools, Preview, and Properties tabs, plus a persistent timeline area.
-- Media, sounds, text, stickers, effects, captions, settings, Audio Studio, Text Studio, Text Motion, and selected-clip adjustment panels.
+- Media, sounds, text, stickers, effects, captions, settings, Audio Studio, Smart Cut, Text Studio, Text Motion, and selected-clip adjustment panels.
 - The Adjustment panel is connected to the existing property registry. For a single selected visual clip it exposes the available transform controls (position, scale, rotation), blending controls (opacity and blend mode), and clip-effects editor. It does not create a parallel editing model.
 - The default effect registry includes Gaussian Blur, XTOP Color Adjust, Sepia, Black & White, Vignette, Chromatic Aberration, Film Grain, Digital Glitch, and Light Leak. The four new stylized effects share the registered XTOP Stylize WGSL pipeline and expose persisted Amount controls through the existing clip-effects editor. Film Grain and Digital Glitch use deterministic screen-space patterns (not animated noise or time-varying VHS simulation); Light Leak is a static warm radial overlay; Chromatic Aberration offsets red/blue channels toward the frame edges. This is a renderer-backed starter collection, not a full compositing suite.
 - Audio clips use their existing Audio and Speed property controls in the Properties panel; they do not currently expose the visual Adjustment panel's transform/blending/effects groups.
@@ -17,7 +17,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - The existing export dialog supports the formats and quality controls implemented by the upstream export engine.
 - Project rename, exit, delete, onboarding, and migration flows remain part of the editor.
 
-## Confirmed unfinished areas
+- **Smart Cut:** a local browser-based silence detector for one selected audio clip with a decoded AudioBuffer. It scans 100 ms RMS windows across channels, exposes an adjustable dB threshold and minimum quiet duration, and lists candidate quiet ranges with total duration and potential trim percentage. It does not upload audio or modify/delete timeline content. It currently does not detect video scene changes, automatically split clips, or remove silence; suggested ranges require manual review and trimming.\n\n## Confirmed unfinished areas
 
 - **Transitions:** the Transitions panel applies Fade In, Fade Out, and Fade In + Out presets to one selected visual clip using native persisted opacity keyframes. It protects clips that already have opacity keyframes. This first step does not implement overlapping-clip crossfades, transition handles, or a general transition model.
 - **Audio Studio:** a dedicated tab for one selected audio clip reuses the existing Audio and Speed property controls, displays a sampled waveform when decoded audio buffer data is available, and applies Fade In, Fade Out, or Fade In + Out through native volume keyframes. Fade lengths are selectable (0.25, 0.5, 1, or 2 seconds) and capped at half the clip duration. Existing volume animation is protected. This is not a standalone multitrack audio workstation: voiceover recording, noise reduction, EQ, compression, audio ducking, waveform trimming handles, and advanced mixing are not included.
@@ -39,7 +39,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Verify visual clip transform, blending, Gaussian Blur, Color Adjust, and Fade In/Out keyframes persist and render correctly.
 - Verify Text Studio font, color, background, spacing, alignment, transform, outline, shadow, gradient, and glow edits persist and render in preview/export.
 - Verify text entrance/exit presets, including typewriter reveal, bounce, zoom, and rotation, play correctly at clip boundaries and survive save/reopen.
-- Verify Audio Studio waveform rendering, volume changes, speed changes, and Fade In/Out keyframes on uploaded audio clips; save/reopen and check preview/export audio levels.
+- Verify Audio Studio waveform rendering, volume changes, speed changes, and Fade In/Out keyframes on uploaded audio clips; verify Smart Cut silence ranges at several thresholds against known audio; save/reopen and check preview/export audio levels.
 - Verify outline thickness/color, shadow blur/offset/color, neon glow, and gradient angle/colors at multiple canvas resolutions and with multi-line text.
 - Verify export completion, downloaded file integrity, and error handling.
 
