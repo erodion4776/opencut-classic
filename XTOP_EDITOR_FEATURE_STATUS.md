@@ -23,7 +23,8 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - **Text motion:** the Text Motion panel adds Fade Up, Pop In, Slide From Left, and Slide From Right presets to one selected text clip. Presets write native opacity and transform keyframes, preserve existing base values, and refuse to overwrite any affected animation channel. These are linear entrance animations; animated exits, per-word/typewriter reveals, and custom easing presets are not included yet.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** the starter library now includes Gaussian Blur, Color Adjust, Sepia, Black & White, and Vignette. These additions have source-level renderer wiring but still require compilation and preview/export verification.
-- **Caption styling:** the Captions panel now includes Classic, Creator Bold, Yellow Highlight, and Soft Box presets. Applying a preset updates the selected text/subtitle clips through the existing timeline update command; multi-selection is supported and non-text selections are left unchanged. These are whole-clip styles, not word-by-word highlighting or animated karaoke captions. Fine-grained styling remains available through the existing Text properties tab.
+- **Caption styling:** the Captions panel includes Classic, Creator Bold, Yellow Highlight, and Soft Box presets. Applying a preset updates selected text/subtitle clips through the existing timeline update command; multi-selection is supported and non-text selections are left unchanged. These are whole-clip styles.
+- **Word-by-word caption mode:** transcription can now generate one-word, three-word, or five-word caption clips. One-word mode gives a sequential, karaoke-like presentation and can be combined with the caption style presets. Word boundaries are estimated evenly inside each detected speech segment because the current transcription result exposes segment timestamps, not word-level forced alignment. Imported SRT/ASS files retain their own cue timing. Precise word timing and active-word highlighting within a multiword line are not implemented.
 - **Social publishing handoff:** export currently provides the starting point for a manual handoff; direct upload into the XTOP publisher has not been implemented or verified.
 
 ## XTOP build sequence
@@ -51,7 +52,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Acceptance checklist
 
 - [ ] Android Chrome: create/open a project and import local media.
-- [ ] Android Chrome: edit text/captions, apply caption style presets, and use the timeline without horizontal page overflow.
+- [ ] Android Chrome: edit text/captions, apply caption style presets, test one-word/three-word/five-word transcription modes, and use the timeline without horizontal page overflow.
 - [ ] Desktop: resize panels and use the timeline.
 - [ ] Save, close, and reopen a project without losing edits.
 - [ ] Verify transform, blending, and Gaussian Blur edits persist and affect preview/export.
