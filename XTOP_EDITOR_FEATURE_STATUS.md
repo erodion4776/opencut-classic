@@ -20,7 +20,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Confirmed unfinished areas
 
 - **Transitions:** the Transitions panel applies Fade In, Fade Out, and Fade In + Out presets to one selected visual clip using native persisted opacity keyframes. It protects clips that already have opacity keyframes. This first step does not implement overlapping-clip crossfades, transition handles, or a general transition model.
-- **Text motion:** the Text Motion panel adds Fade Up, Pop In, Slide From Left, and Slide From Right presets to one selected text clip. Presets write native opacity and transform keyframes, preserve existing base values, and refuse to overwrite any affected animation channel. These are linear entrance animations; animated exits, per-word/typewriter reveals, and custom easing presets are not included yet.
+- **Text motion:** the Text Motion panel adds entrance presets for Fade Up, Pop In, Slide From Left/Right, Typewriter, Bounce In, Zoom In, and Rotate In, plus exit presets for Fade Out, Zoom Out, Slide Down, and Rotate Out. Presets write native opacity/transform keyframes; Typewriter animates a renderer-backed 0–1 text reveal parameter. Multi-point bounce uses intermediate keyframes. Existing animated channels are protected. Timing is linear; editable easing curves, per-character timing controls, and looping animations are not included.
 - **Color grading:** the first renderer-backed Color Adjust effect now supports brightness, contrast, saturation, and temperature. Tint, curves, HSL controls, LUTs, scopes, and advanced grading remain unimplemented.
 - **Effects library:** the starter library now includes Gaussian Blur, Color Adjust, Sepia, Black & White, and Vignette. These additions have source-level renderer wiring but still require compilation and preview/export verification.
 - **Text Studio:** a dedicated asset-panel tab exposes the existing text and transform parameter controls for one selected text clip. This includes text content, font family, font size, text color, alignment, weight, style, decoration, letter spacing, line height, background enable/color/rounding/padding/offset, outline color/width, shadow enable/color/blur/offset, neon glow enable/color/strength, gradient text enable/start/end colors/angle, and transform position/scale/rotation. Outline strokes are drawn before text fill; glow and drop shadow are rendered as separate canvas shadow passes; gradient fill is generated from the measured text block. These properties are stored in the text element params and rendered by the canvas text renderer.
@@ -36,7 +36,8 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 - Verify adding text and captions to the timeline, selecting them, editing their properties, and saving/reopening the project.
 - Verify trimming, splitting, moving, and deleting timeline clips.
 - Verify visual clip transform, blending, Gaussian Blur, Color Adjust, and Fade In/Out keyframes persist and render correctly.
-- Verify Text Studio font, color, background, spacing, alignment, transform, outline and shadow edits persist and render in preview/export.
+- Verify Text Studio font, color, background, spacing, alignment, transform, outline, shadow, gradient, and glow edits persist and render in preview/export.
+- Verify text entrance/exit presets, including typewriter reveal, bounce, zoom, and rotation, play correctly at clip boundaries and survive save/reopen.
 - Verify outline thickness/color, shadow blur/offset/color, neon glow, and gradient angle/colors at multiple canvas resolutions and with multi-line text.
 - Verify export completion, downloaded file integrity, and error handling.
 
@@ -56,7 +57,7 @@ The current editor route is `apps/web/src/app/editor/[project_id]/page.tsx`.
 ## Acceptance checklist
 
 - [ ] Android Chrome: create/open a project and import local media.
-- [ ] Android Chrome: edit text in Text Studio, apply caption style and entrance/exit animation presets, test one-word/three-word/five-word transcription modes, and use the timeline without horizontal page overflow.
+- [ ] Android Chrome: edit text in Text Studio, apply text entrance/exit presets including typewriter, bounce, zoom and rotation, apply caption style and entrance/exit animation presets, test one-word/three-word/five-word transcription modes, and use the timeline without horizontal page overflow.
 - [ ] Desktop: resize panels and use the timeline.
 - [ ] Save, close, and reopen a project without losing edits.
 - [ ] Verify transform, blending, and Gaussian Blur edits persist and affect preview/export.
