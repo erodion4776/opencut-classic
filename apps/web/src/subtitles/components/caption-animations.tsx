@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
-import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
 import { Button } from "@/components/ui/button";
 import { mediaTimeFromSeconds, mediaTimeToSeconds } from "@/wasm";
 
@@ -17,7 +16,7 @@ export function CaptionAnimationsView() {
 
 	if (selectedElements.length !== 1) {
 		return (
-			<PanelView title="Caption Animations">
+			<div className="border-t px-3 py-4">
 				<div className="flex min-h-36 flex-col items-center justify-center gap-2 px-4 text-center">
 					<p className="text-sm font-medium">
 						{selectedElements.length === 0 ? "Select a caption clip" : "Select one caption at a time"}
@@ -26,18 +25,18 @@ export function CaptionAnimationsView() {
 						Apply an entrance and exit animation to a selected text clip.
 					</p>
 				</div>
-			</PanelView>
+			</div>
 		);
 	}
 
 	const item = editor.timeline.getElementsWithTracks({ elements: selectedElements })[0];
 	if (!item || item.element.type !== "text") {
 		return (
-			<PanelView title="Caption Animations">
+			<div className="border-t px-3 py-4">
 				<p className="px-3 py-8 text-center text-sm text-muted-foreground">
 					Select a text or subtitle clip on the timeline.
 				</p>
-			</PanelView>
+			</div>
 		);
 	}
 
@@ -93,7 +92,7 @@ export function CaptionAnimationsView() {
 	};
 
 	return (
-		<PanelView title="Caption Animations" contentClassName="pb-6">
+		<div className="border-t px-3 py-4">
 			<div className="flex flex-col gap-4">
 				<div className="rounded-md border p-3">
 					<p className="text-sm font-medium">Selected caption</p>
@@ -121,6 +120,6 @@ export function CaptionAnimationsView() {
 				)}
 				<p className="text-xs text-muted-foreground">These presets write native timeline keyframes. Entrance and exit durations are capped at half the selected clip length. Clear conflicting keyframes before applying another preset.</p>
 			</div>
-		</PanelView>
+		</div>
 	);
 }
