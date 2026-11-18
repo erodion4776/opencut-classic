@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/tooltip";
 import type { DiagnosticSeverity } from "@/diagnostics/types";
 import { CaptionStylesView } from "./caption-styles";
+import { CaptionAnimationsView } from "./caption-animations";
 
 const DIAGNOSTIC_BUTTON_VARIANT: Record<
 	DiagnosticSeverity,
@@ -370,6 +371,7 @@ export function Captions() {
 				</SectionContent>
 			</Section>
 			<CaptionStylesView />
+			<CaptionAnimationsView />
 		</PanelView>
 	);
 }
