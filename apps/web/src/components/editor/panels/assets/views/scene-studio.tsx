@@ -90,6 +90,21 @@ export function SceneStudioView() {
  const totalScenes = cuts.length + 1;
  const sceneSummary = useMemo(() => cuts.map((cut, index) => ({ ...cut, number: index + 2 })), [cuts]);
 
+ const highlights = useMemo(() => {
+  const boundaries = [0, ...cuts.map((cut) => cut.seconds), duration];
+  const candidates = boundaries.slice(0, -1).map((start, index) => {
+   const end = boundaries[index + 1];
+   const length = end - start;
+   const before = index > 0 ? cuts[index - 1]?.score ?? 0 : 0;
+   const after = index < cuts.length ? cuts[index]?.score ?? 0 : 0;
+   const visualChange = Math.max(before, after);
+   const durationFit = length >= 4 && length <= 15 ? 100 : Math.max(0, 100 - Math.min(Math.abs(length - 8) * 8, 100));
+   const score = Math.round(visualChange * 0.7 + durationFit * 0.3);
+   return { start, end, length, score };
+  }).filter((scene) => scene.length >= 2);
+  return candidates.sort((a, b) => b.score - a.score).slice(0, 3);
+ }, [cuts, duration]);
+
  const analyze = async () => {
   if (!element || !asset || asset.type !== "video") return;
   setBusy(true);
@@ -154,6 +169,26 @@ export function SceneStudioView() {
         <p className="mt-2 text-[11px] text-muted-foreground">Review the detected boundaries before splitting. The operation uses the editor's native timeline split command and can be undone.</p>
        </>
       ) : <p className="mt-3 text-xs text-muted-foreground">No scene changes matched this sensitivity. Try a lower value.</p>}
+     </section>
+    )}
+    {analyzedId === element?.id && highlights.length > 0 && (
+     <section className="rounded-md border p-3">
+      <div className="flex items-center justify-between">
+       <h3 className="text-sm font-semibold">Highlight suggestions</h3>
+       <span className="text-xs text-muted-foreground">Top {highlights.length}</span>
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">Suggested moments ranked using scene-change strength and a short-clip duration heuristic. These are editing suggestions, not AI content understanding.</p>
+      <ol className="mt-3 flex flex-col gap-2">
+       {highlights.map((highlight, index) => (
+        <li key={highlight.start} className="rounded border p-2">
+         <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold">Highlight {index + 1}</span>
+          <span className="font-mono text-muted-foreground">{highlight.score}/100</span>
+         </div>
+         <div className="mt-1 text-xs tabular-nums">{highlight.start.toFixed(1)}s – {highlight.end.toFixed(1)}s <span className="text-muted-foreground">({highlight.length.toFixed(1)}s)</span></div>
+        </li>
+       ))}
+      </ol>
      </section>
     )}
    </div>
