@@ -39,6 +39,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { DiagnosticSeverity } from "@/diagnostics/types";
+import { CaptionStylesView } from "./caption-styles";
 
 const DIAGNOSTIC_BUTTON_VARIANT: Record<
 	DiagnosticSeverity,
@@ -334,6 +335,7 @@ export function Captions() {
 					)}
 				</SectionContent>
 			</Section>
+			<CaptionStylesView />
 		</PanelView>
 	);
 }
