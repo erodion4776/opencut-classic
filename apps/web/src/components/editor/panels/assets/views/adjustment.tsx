@@ -5,7 +5,7 @@ import { useElementSelection } from "@/timeline/hooks/element/use-element-select
 import { getPropertiesConfig } from "@/components/editor/panels/properties/registry";
 import { PanelView } from "./base-panel";
 
-const ADJUSTMENT_TABS = new Set(["transform", "blending"]);
+const ADJUSTMENT_TABS = new Set(["transform", "blending", "effects"]);
 
 export function AdjustmentView() {
 	const editor = useEditor();
