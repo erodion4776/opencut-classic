@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import { getPropertiesConfig } from "@/components/editor/panels/properties/registry";
@@ -44,6 +44,18 @@ export function AudioStudioView() {
  const audioTab = audioConfig.tabs.find((tab) => tab.id === "audio");
  const speedTab = audioConfig.tabs.find((tab) => tab.id === "speed");
  const hasVolumeAnimation = Boolean(element.animations?.volume);
+ const waveform = useMemo(() => {
+  const channel = element.buffer?.getChannelData(0);
+  if (!channel?.length) return [];
+  const bars = 64;
+  return Array.from({ length: bars }, (_, index) => {
+   const start = Math.floor((index / bars) * channel.length);
+   const end = Math.max(start + 1, Math.floor(((index + 1) / bars) * channel.length));
+   let peak = 0;
+   for (let sample = start; sample < Math.min(end, channel.length); sample++) peak = Math.max(peak, Math.abs(channel[sample]));
+   return Math.max(8, Math.round(peak * 100));
+  });
+ }, [element.buffer]);
 
  const applyFade = (mode: FadeMode) => {
   if (duration <= 0 || hasVolumeAnimation) return;
@@ -90,6 +102,11 @@ export function AudioStudioView() {
      <h3 className="px-2 pt-1 text-xs font-semibold text-muted-foreground">PLAYBACK SPEED</h3>
      {speedTab.content({ trackId: item.track.id })}
     </section>}
+    <section className="rounded-md border p-3">
+     <h3 className="text-sm font-semibold">Waveform</h3>
+     {waveform.length ? <div className="mt-3 flex h-16 items-center gap-px overflow-hidden rounded bg-muted/40 px-2" role="img" aria-label="Audio waveform preview">{waveform.map((height, index) => <div key={index} className="min-w-0 flex-1 rounded-sm bg-primary/70" style={{ height: `${height}%` }} />)}</div> : <p className="mt-2 text-xs text-muted-foreground">Waveform preview becomes available when this audio clip has decoded sample data.</p>}
+     <p className="mt-2 text-xs text-muted-foreground">Use the timeline to trim and reposition the audio clip.</p>
+    </section>
     <section className="rounded-md border p-3">
      <h3 className="text-sm font-semibold">Fade automation</h3>
      <p className="mt-1 text-xs text-muted-foreground">Choose a fade length, then apply native volume keyframes to this clip.</p>
