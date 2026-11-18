@@ -21,7 +21,7 @@ import type {
 	TProjectSortKey,
 	TProjectSortOption,
 } from "@/project/types";
-import { formatTimecode, mediaTimeToSeconds } from "opencut-wasm";
+
 import { formatDate } from "@/utils/date";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -67,18 +67,29 @@ import { ProjectInfoDialog } from "@/project/components/project-info-dialog";
 import { RenameProjectDialog } from "@/project/components/rename-project-dialog";
 import { cn } from "@/utils/ui";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
+// MediaTime values are integer ticks at 120,000 ticks per second.
+// Keep this lightweight display formatter independent of opencut-wasm so
+// Cloudflare Workers do not try to load the WASM binary during SSR.
+const TICKS_PER_SECOND = 120_000;
+
 const formatProjectDuration = ({
 	duration,
 }: {
 	duration: number | undefined;
 }): string | null => {
-	if (duration === undefined) {
+	if (duration === undefined || !Number.isFinite(duration)) {
 		return null;
 	}
 
-	const durationSeconds = mediaTimeToSeconds({ time: duration });
-	const format = durationSeconds >= 3600 ? "HH:MM:SS" : "MM:SS";
-	return formatTimecode({ time: duration, format }) ?? "";
+	const totalSeconds = Math.floor(Math.max(0, duration) / TICKS_PER_SECOND);
+	const seconds = totalSeconds % 60;
+	const minutes = Math.floor(totalSeconds / 60) % 60;
+	const hours = Math.floor(totalSeconds / 3600);
+	const pad = (value: number) => String(value).padStart(2, "0");
+
+	return hours > 0
+		? `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+		: `${pad(Math.floor(totalSeconds / 60))}:${pad(seconds)}`;
 };
 
 const VIEW_MODE_OPTIONS = [
