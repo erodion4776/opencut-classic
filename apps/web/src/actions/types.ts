@@ -25,16 +25,19 @@ export type TActionWithOptionalArgs =
 
 export type TActionWithNoArgs = Exclude<TAction, TActionWithArgs>;
 
+const ACTIONS_REQUIRING_ARGUMENTS = new Set<string>([
+	"remove-media-asset",
+	"remove-media-assets",
+]);
+
 export function isActionWithOptionalArgs(
 	value: unknown,
 ): value is TActionWithOptionalArgs {
-	if (typeof value !== "string" || !(value in ACTIONS)) return false;
-	const definition = ACTIONS[value as TAction];
-	return !definition.args ||
-		value === "seek-forward" ||
-		value === "seek-backward" ||
-		value === "jump-forward" ||
-		value === "jump-backward";
+	return (
+		typeof value === "string" &&
+		value in ACTIONS &&
+		!ACTIONS_REQUIRING_ARGUMENTS.has(value)
+	);
 }
 
 export type TArgOfAction<A extends TAction> = A extends TActionWithArgs
