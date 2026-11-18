@@ -14,6 +14,7 @@ import { TransitionsView } from "./views/transitions";
 import { TextAnimationsView } from "./views/text-animations";
 import { TextStudioView } from "./views/text-studio";
 import { AudioStudioView } from "./views/audio-studio";
+import { SmartCutView } from "./views/smart-cut";
 
 export function AssetsPanel() {
 	const { activeTab } = useAssetsPanelStore();
@@ -30,6 +31,7 @@ export function AssetsPanel() {
 		adjustment: <AdjustmentView />,
 		"text-studio": <TextStudioView />,
 		"audio-studio": <AudioStudioView />,
+		"smart-cut": <SmartCutView />,
 		settings: <SettingsView />,
 	};
 
