@@ -5,7 +5,7 @@ import { useEditor } from "@/editor/use-editor";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import { PanelView } from "./base-panel";
 import { Button } from "@/components/ui/button";
-import { mediaTimeFromSeconds, mediaTimeToSeconds, TICKS_PER_SECOND } from "@/wasm";
+import { mediaTimeFromSeconds, mediaTimeToSeconds } from "@/wasm";
 
 const DURATIONS = [0.25, 0.5, 1, 1.5, 2];
 type FadePreset = "in" | "out" | "both";
