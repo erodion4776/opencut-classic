@@ -54,6 +54,12 @@ export function renderTextToContext({
 		textColor: resolved.textColor,
 		background: resolved.measuredText.resolvedBackground,
 		backgroundColor: resolved.backgroundColor,
+		outlineColor: String(node.params.params["outline.color"] ?? "transparent"),
+		outlineWidth: Number(node.params.params["outline.width"] ?? 0),
+		shadowColor: Boolean(node.params.params["shadow.enabled"]) ? String(node.params.params["shadow.color"] ?? "#000000") : "transparent",
+		shadowBlur: Number(node.params.params["shadow.blur"] ?? 0),
+		shadowOffsetX: Number(node.params.params["shadow.offsetX"] ?? 0),
+		shadowOffsetY: Number(node.params.params["shadow.offsetY"] ?? 0),
 		textBaseline: baseline,
 	});
 
