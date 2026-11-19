@@ -431,7 +431,7 @@ export function Timeline() {
 	return (
 		<section
 			className={
-				"panel bg-background relative flex h-full flex-col overflow-hidden rounded-sm border"
+				"panel bg-background relative flex h-full flex-col overflow-hidden rounded-sm border max-md:rounded-none max-md:border-0 max-md:bg-black"
 			}
 			{...dragProps}
 			aria-label="Timeline"
@@ -636,7 +636,7 @@ function TrackLabelsPanel({
 
 	return (
 		<div
-			className="flex shrink-0 flex-col border-r max-md:!w-8 max-md:border-r-0"
+			className="flex shrink-0 flex-col border-r max-md:!w-0 max-md:border-r-0"
 			style={{ width: `${TIMELINE_TRACK_LABELS_COLUMN_WIDTH_PX}px` }}
 		>
 			<div
