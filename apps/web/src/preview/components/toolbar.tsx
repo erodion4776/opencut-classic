@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Undo2, Redo2 } from "lucide-react";
 import { useEditor } from "@/editor/use-editor";
 import { formatTimecode } from "opencut-wasm";
 import { invokeAction } from "@/actions";
@@ -32,10 +33,10 @@ export function PreviewToolbar({
 	onToggleFullscreen: () => void;
 }) {
 	return (
-		<div className="grid grid-cols-[1fr_auto_1fr] items-center pb-3 pt-5 px-5">
+		<div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-5 pb-3 pt-5 max-md:px-2 max-md:py-1.5 max-md:bg-black">
 			<TimecodeDisplay />
 			<PlayPauseButton />
-			<div className="justify-self-end flex items-center gap-2.5">
+			<div className="justify-self-end flex items-center gap-1 max-md:gap-0">
 				<ZoomSelect />
 				<Separator orientation="vertical" className="h-4" />
 				{/* v0.4.0 */}
@@ -51,7 +52,7 @@ export function PreviewToolbar({
 						)}
 					</Button>
 				</GridPopover> */}
-				<Button variant="text" onClick={onToggleFullscreen}>
+				<div className="hidden max-md:flex items-center"><Button variant="text" size="icon" aria-label="Undo" className="size-10" onClick={() => invokeAction("undo")}><Undo2 className="size-5" /></Button><Button variant="text" size="icon" aria-label="Redo" className="size-10" onClick={() => invokeAction("redo")}><Redo2 className="size-5" /></Button></div><Button variant="text" onClick={onToggleFullscreen}>
 					<HugeiconsIcon icon={FullScreenIcon} />
 				</Button>
 			</div>
@@ -77,7 +78,7 @@ function TimecodeDisplay() {
 	}, [editor.playback]);
 
 	return (
-		<div className="flex items-center">
+		<div className="flex min-w-0 items-center max-md:scale-[0.88] max-md:origin-left">
 			<EditableTimecode
 				time={currentTime}
 				duration={totalDuration}
