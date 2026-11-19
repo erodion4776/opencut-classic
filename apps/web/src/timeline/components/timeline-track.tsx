@@ -78,7 +78,7 @@ export function TimelineTrackContent({
 				}}
 			>
 				{track.elements.length === 0 ? (
-					<div className="text-muted-foreground border-muted/30 pointer-events-none flex size-full items-center justify-center rounded-sm border-2 border-dashed text-xs" />
+					<div className="text-muted-foreground border-muted/30 pointer-events-none flex size-full items-center justify-center rounded-sm border-2 border-dashed text-xs max-md:rounded-none max-md:border-0 max-md:border-b max-md:border-[#252528]" />
 				) : (
 					track.elements.map((element) => {
 						const isSelected = isElementSelected({
