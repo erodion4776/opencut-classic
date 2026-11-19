@@ -35,11 +35,7 @@ export function EditorHeader() {
 				<ProjectDropdown />
 				<div className="max-md:hidden"><EditableProjectName /></div>
 			</div>
-			<nav className="flex items-center gap-2">
-				<FeedbackPopover />
-				<ExportButton />
-				<ThemeToggle />
-			</nav>
+			<nav className="flex shrink-0 items-center gap-2 max-md:gap-1"><div className="max-md:hidden"><FeedbackPopover /><ThemeToggle /></div><span className="hidden text-xs font-medium text-white/80 max-md:inline">1080p ▾</span><ExportButton /></nav>
 		</header>
 	);
 }
@@ -113,13 +109,7 @@ function ProjectDropdown() {
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost" size="icon" className="p-1 rounded-sm size-8">
-						<Image
-							src={DEFAULT_LOGO_URL}
-							alt="Project thumbnail"
-							width={32}
-							height={32}
-							className="invert dark:invert-0 size-5"
-						/>
+						<span className="hidden md:block"><Image src={DEFAULT_LOGO_URL} alt="Project thumbnail" width={32} height={32} className="invert dark:invert-0 size-5" /></span><X className="hidden max-md:block size-5" />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start" className="z-100 w-44">
