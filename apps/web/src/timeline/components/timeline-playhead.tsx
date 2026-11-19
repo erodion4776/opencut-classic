@@ -122,7 +122,7 @@ export function TimelinePlayhead({
 			}}
 			onKeyDown={handlePlayheadKeyDown}
 		>
-			<div className="bg-primary pointer-events-none absolute left-0 h-full w-0.5" />
+			<div className="pointer-events-none absolute left-0 h-full w-[2px] bg-primary max-md:bg-white" />
 
 			<button
 				type="button"
