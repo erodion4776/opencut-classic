@@ -1155,7 +1155,7 @@ function MediaElementHeader({
 		>
 			{leading && <div className="pl-1">{leading}</div>}
 			{name && (
-				<span className="truncate px-1.5 text-[0.6rem] leading-tight text-white/75">
+				<span className="hidden truncate px-1.5 text-[0.6rem] leading-tight text-white/75 md:inline">
 					{name}
 				</span>
 			)}
