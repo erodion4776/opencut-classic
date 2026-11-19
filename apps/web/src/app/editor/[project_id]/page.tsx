@@ -168,7 +168,7 @@ function EditorLayout() {
 					)}
 					{mobilePanel === "properties" && <PropertiesPanel />}
 				</div>
-				<div className="h-[42%] min-h-[190px] shrink-0 overflow-hidden rounded-md border px-1 pb-1">
+				<div className="h-[46%] min-h-[220px] shrink-0 overflow-hidden rounded-md border px-1 pb-1">
 					<Timeline />
 				</div>
 			</div>
