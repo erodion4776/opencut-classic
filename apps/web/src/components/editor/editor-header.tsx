@@ -26,13 +26,14 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ShortcutsDialog } from "@/actions/components/shortcuts-dialog";
 import Image from "next/image";
 import { cn } from "@/utils/ui";
+import { X } from "lucide-react";
 
 export function EditorHeader() {
 	return (
-		<header className="bg-background flex min-h-[3.4rem] w-full min-w-0 items-center justify-between gap-1 overflow-hidden px-2 pt-0.5 sm:px-3">
+		<header className="bg-background flex min-h-[3.4rem] w-full min-w-0 items-center justify-between gap-1 overflow-hidden px-2 pt-0.5 sm:px-3 max-md:min-h-12 max-md:bg-black max-md:px-2">
 			<div className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
 				<ProjectDropdown />
-				<EditableProjectName />
+				<div className="max-md:hidden"><EditableProjectName /></div>
 			</div>
 			<nav className="flex items-center gap-2">
 				<FeedbackPopover />
