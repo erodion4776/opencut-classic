@@ -92,6 +92,14 @@ function EditorLayout() {
 		mediaQuery.addEventListener("change", updateViewport);
 		return () => mediaQuery.removeEventListener("change", updateViewport);
 	}, []);
+	useEffect(() => {
+		const openMobilePanel = (event: Event) => {
+			const detail = (event as CustomEvent<{ panel?: "media" | "properties" }>).detail;
+			setMobilePanel(detail?.panel ?? "media");
+		};
+		window.addEventListener("xtop:mobile-open-panel", openMobilePanel);
+		return () => window.removeEventListener("xtop:mobile-open-panel", openMobilePanel);
+	}, []);
 	const activeScene = useEditor((editor) =>
 		editor.scenes.getActiveSceneOrNull(),
 	);
