@@ -81,6 +81,7 @@ import { useInitialScrollBottom } from "@/timeline/hooks/use-initial-scroll-bott
 import { useTimelineResize } from "@/timeline/hooks/use-timeline-resize";
 import { useTimelineStore } from "@/timeline/timeline-store";
 import { useEditor } from "@/editor/use-editor";
+import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 import { useScrollPosition } from "@/timeline/hooks/use-scroll-position";
 import { useTimelinePlayhead } from "@/timeline/hooks/use-timeline-playhead";
 import { DragLine } from "./drag-line";
@@ -123,6 +124,7 @@ export function Timeline() {
 		mergeElementsIntoSelection,
 	} = useElementSelection();
 	const editor = useEditor();
+	const setAssetsTab = useAssetsPanelStore((state) => state.setActiveTab);
 	const timeline = editor.timeline;
 	const scene = useEditor((currentEditor) =>
 		currentEditor.scenes.getActiveSceneOrNull(),
@@ -562,6 +564,12 @@ export function Timeline() {
 									/>
 								)}
 							</div>
+							{scene && scene.tracks.audio.length === 0 && (
+								<button type="button" className="mx-1 mb-1 flex h-[42px] shrink-0 items-center gap-2 rounded-lg border border-[#29292c] bg-[#111113] px-3 text-left text-xs text-[#b8b8bd] hover:bg-[#1a1a1d] md:hidden" onClick={() => { setAssetsTab("sounds"); window.dispatchEvent(new CustomEvent("xtop:mobile-open-panel", { detail: { panel: "media" } })); }}><span className="text-base leading-none">+</span>Add audio</button>
+							)}
+							{scene && !scene.tracks.overlay.some((track) => track.type === "text") && (
+								<button type="button" className="mx-1 mb-1 flex h-[42px] shrink-0 items-center gap-2 rounded-lg border border-[#29292c] bg-[#111113] px-3 text-left text-xs text-[#b8b8bd] hover:bg-[#1a1a1d] md:hidden" onClick={() => { setAssetsTab("text"); window.dispatchEvent(new CustomEvent("xtop:mobile-open-panel", { detail: { panel: "media" } })); }}><span className="text-base leading-none">+</span>Add text</button>
+							)}
 							<TimelineGutter
 								onMouseDown={(event) => {
 									handleTracksMouseDown(event);
