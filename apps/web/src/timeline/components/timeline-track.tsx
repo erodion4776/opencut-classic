@@ -94,9 +94,11 @@ export function TimelineTrackContent({
 				}}
 			>
 				{track.elements.length === 0 ? (
-					<button
-						type="button"
-						className="absolute inset-0 flex items-center justify-center gap-2 rounded-sm border border-dashed border-muted/30 text-xs text-muted-foreground transition-colors hover:bg-white/5 max-md:rounded-none max-md:border-0 max-md:border-b max-md:border-[#252528]"
+					<>
+						<div className="text-muted-foreground border-muted/30 pointer-events-none flex size-full items-center justify-center rounded-sm border-2 border-dashed text-xs max-md:hidden" />
+						<button
+							type="button"
+							className="absolute inset-0 hidden items-center justify-center gap-2 border-b border-[#252528] text-xs text-muted-foreground transition-colors hover:bg-white/5 max-md:flex"
 						onClick={(event) => {
 							event.stopPropagation();
 							openAssetTab(track.type === "audio" ? "sounds" : track.type === "text" ? "text" : "media");
@@ -104,7 +106,8 @@ export function TimelineTrackContent({
 					>
 						<span className="text-base leading-none">+</span>
 						<span>Add {track.type === "audio" ? "audio" : track.type === "text" ? "text" : "media"}</span>
-					</button>
+						</button>
+					</>
 				) : (
 					track.elements.map((element) => {
 						const isSelected = isElementSelected({
@@ -138,7 +141,7 @@ export function TimelineTrackContent({
 					<button
 						type="button"
 						aria-label="Add media to video track"
-						className="absolute top-1/2 z-20 flex size-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-[#252528] text-lg text-white shadow-lg hover:bg-[#343438] max-md:size-7"
+						className="absolute top-1/2 z-20 hidden size-8 -translate-y-1/2 max-md:flex items-center justify-center rounded-full border border-white/20 bg-[#252528] text-lg text-white shadow-lg hover:bg-[#343438] max-md:size-7"
 						style={{ left: appendMediaLeft }}
 						onClick={(event) => {
 							event.stopPropagation();
