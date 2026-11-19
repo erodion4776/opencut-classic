@@ -819,6 +819,7 @@ function TimelineTrackRows({
 						>
 							<TimelineTrackContent
 								track={track}
+								isMainTrack={track.id === mainTrackId}
 								zoomLevel={zoomLevel}
 								dragView={dragView}
 								onResizeStart={onResizeStart}
