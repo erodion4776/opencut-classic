@@ -206,12 +206,26 @@ function PreviewCanvas({
 		lastFrameRef.current = frame;
 		renderer
 			.render({ node: renderTree, time: renderTime })
-			.then(() => {
+			.catch((error) => {
+				console.error("Preview frame render failed:", error);
+				lastFrameRef.current = -1;
+			})
+			.finally(() => {
 				renderingRef.current = false;
 			});
 	}, [renderer, renderTree, editor.playback, editor.timeline]);
 
 	useRafLoop(render);
+
+	// The mobile editor can change the preview's available height after the
+	// first paint. Force a fresh frame after mount/resize so a frame skipped
+	// while the viewport was hidden or zero-sized is rendered once it is ready.
+	useEffect(() => {
+		lastFrameRef.current = -1;
+		lastSceneRef.current = null;
+		const frameId = requestAnimationFrame(() => render());
+		return () => cancelAnimationFrame(frameId);
+	}, [render, viewportSize.width, viewportSize.height]);
 
 	useEffect(() => {
 		const container = viewportRef.current;
@@ -310,7 +324,7 @@ function PreviewCanvas({
 							>
 							<div
 								ref={canvasMountRef}
-								className="absolute block border"
+								className="absolute block border max-md:border-0"
 								style={{
 									left: viewport.sceneLeft,
 									top: viewport.sceneTop,
