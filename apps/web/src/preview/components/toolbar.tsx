@@ -78,7 +78,7 @@ function TimecodeDisplay() {
 	}, [editor.playback]);
 
 	return (
-		<div className="flex min-w-0 items-center max-md:scale-[0.82] max-md:origin-left">
+		<div className="flex min-w-0 items-center">
 			<EditableTimecode
 				time={currentTime}
 				duration={totalDuration}
