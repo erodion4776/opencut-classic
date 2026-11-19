@@ -33,30 +33,30 @@ export function PreviewToolbar({
 	onToggleFullscreen: () => void;
 }) {
 	return (
-		<div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-5 pb-3 pt-5 max-md:px-2 max-md:py-1.5 max-md:bg-black">
-			<div className="flex min-w-0 items-center gap-1"><TimecodeDisplay /><Button variant="text" size="icon" aria-label="Fullscreen" className="hidden max-md:flex size-10" onClick={onToggleFullscreen}><HugeiconsIcon icon={FullScreenIcon} /></Button></div>
-			<PlayPauseButton />
-			<div className="justify-self-end flex items-center gap-1 max-md:gap-0">
-				<div className="max-md:hidden"><ZoomSelect /></div>
-				<Separator orientation="vertical" className="h-4" />
-				{/* v0.4.0 */}
-				{/* <GridPopover>
-					<Button
-						variant={activeGuideDefinition ? "secondary" : "text"}
-						size="icon"
-					>
-						{activeGuideDefinition ? (
-							activeGuideDefinition.renderTriggerIcon()
-						) : (
-							<HugeiconsIcon icon={GridTableIcon} />
-						)}
+		<>
+			<div className="hidden grid-cols-[1fr_auto_1fr] items-center gap-1 px-5 pb-3 pt-5 md:grid">
+				<div className="flex min-w-0 items-center gap-1"><TimecodeDisplay /></div>
+				<PlayPauseButton />
+				<div className="flex items-center justify-self-end gap-1">
+					<ZoomSelect />
+					<Separator orientation="vertical" className="h-4" />
+					<Button variant="text" onClick={onToggleFullscreen}>
+						<HugeiconsIcon icon={FullScreenIcon} />
 					</Button>
-				</GridPopover> */}
-				<div className="hidden max-md:flex items-center"><Button variant="text" size="icon" aria-label="Undo" className="size-10" onClick={() => invokeAction("undo")}><Undo2 className="size-5" /></Button><Button variant="text" size="icon" aria-label="Redo" className="size-10" onClick={() => invokeAction("redo")}><Redo2 className="size-5" /></Button></div><Button variant="text" className="max-md:hidden" onClick={onToggleFullscreen}>
+				</div>
+			</div>
+			<div className="grid grid-cols-[1fr_auto_1fr] grid-rows-[40px_24px] items-center gap-x-1 bg-black px-2 py-1 md:hidden">
+				<Button variant="text" size="icon" aria-label="Fullscreen" className="col-start-1 row-start-1 size-10 justify-self-start" onClick={onToggleFullscreen}>
 					<HugeiconsIcon icon={FullScreenIcon} />
 				</Button>
+				<div className="col-start-2 row-start-1 justify-self-center"><PlayPauseButton /></div>
+				<div className="col-start-3 row-start-1 flex items-center justify-self-end">
+					<Button variant="text" size="icon" aria-label="Undo" className="size-10" onClick={() => invokeAction("undo")}><Undo2 className="size-5" /></Button>
+					<Button variant="text" size="icon" aria-label="Redo" className="size-10" onClick={() => invokeAction("redo")}><Redo2 className="size-5" /></Button>
+				</div>
+				<div className="col-span-3 row-start-2 min-w-0 justify-self-start"><TimecodeDisplay /></div>
 			</div>
-		</div>
+		</>
 	);
 }
 
