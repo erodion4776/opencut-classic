@@ -17,9 +17,9 @@ import { MigrationDialog } from "@/project/components/migration-dialog";
 import { usePanelStore } from "@/editor/panel-store";
 import { usePasteMedia } from "@/media/use-paste-media";
 import { MobileGate } from "@/components/editor/mobile-gate";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useEditor } from "@/editor/use-editor";
-import { AudioLines, Captions, Film, Layers, SlidersHorizontal, Sparkles, Type, X } from "lucide-react";
+import { AudioLines, Captions, Scissors, Layers, SlidersHorizontal, Sparkles, Type, X } from "lucide-react";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -239,7 +239,7 @@ function EditorLayout() {
 
 function MobileActionDock({ onOpenPanel }: { onOpenPanel: (panel: "media" | "preview" | "properties") => void }) {
 	const items = [
-		{ label: "Edit", icon: Film, panel: "media" as const },
+		{ label: "Edit", icon: Scissors, panel: "media" as const },
 		{ label: "Audio", icon: AudioLines, panel: "media" as const },
 		{ label: "Text", icon: Type, panel: "media" as const },
 		{ label: "Effects", icon: Sparkles, panel: "media" as const },
@@ -247,5 +247,9 @@ function MobileActionDock({ onOpenPanel }: { onOpenPanel: (panel: "media" | "pre
 		{ label: "Captions", icon: Captions, panel: "media" as const },
 		{ label: "Properties", icon: SlidersHorizontal, panel: "properties" as const },
 	];
-	return <nav aria-label="Mobile editing tools" className="z-30 flex h-16 shrink-0 items-center gap-1 overflow-x-auto border-t border-[#242426] bg-[#09090a] px-2 pb-[env(safe-area-inset-bottom)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{items.map(({ label, icon: Icon, panel }) => <button key={label} type="button" onClick={() => onOpenPanel(panel)} className="flex min-w-[3.25rem] min-h-[44px] flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 text-[10px] text-[#b8b8bd] active:bg-[#242426]"><Icon className="size-5" /><span className="whitespace-nowrap">{label}</span></button>)}</nav>;
+	const dockRef = useRef<HTMLElement>(null);
+	useEffect(() => {
+		if (dockRef.current) dockRef.current.scrollLeft = 0;
+	}, []);
+	return <nav ref={dockRef} aria-label="Mobile editing tools" className="z-30 flex h-16 w-full shrink-0 items-center gap-1 overflow-x-auto overflow-y-hidden border-t border-[#242426] bg-[#09090a] px-1 pb-[env(safe-area-inset-bottom)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{items.map(({ label, icon: Icon, panel }) => <button key={label} type="button" onClick={() => onOpenPanel(panel)} className="flex h-12 w-[64px] shrink-0 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] text-[#b8b8bd] active:bg-[#242426]"><Icon className="size-5" /><span className="whitespace-nowrap">{label}</span></button>)}</nav>;
 }
