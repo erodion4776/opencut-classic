@@ -29,8 +29,8 @@ import { cn } from "@/utils/ui";
 
 export function EditorHeader() {
 	return (
-		<header className="bg-background flex h-[3.4rem] items-center justify-between px-3 pt-0.5">
-			<div className="flex items-center gap-1">
+		<header className="bg-background flex min-h-[3.4rem] w-full min-w-0 items-center justify-between gap-1 overflow-hidden px-2 pt-0.5 sm:px-3">
+			<div className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
 				<ProjectDropdown />
 				<EditableProjectName />
 			</div>
