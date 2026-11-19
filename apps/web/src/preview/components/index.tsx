@@ -78,7 +78,7 @@ export function PreviewPanel({
 	return (
 		<div
 			ref={handleContainerRef}
-			className="panel bg-background relative flex size-full min-h-0 min-w-0 flex-col rounded-sm border"
+			className="panel relative flex size-full min-h-0 min-w-0 flex-col rounded-sm border bg-background max-md:rounded-none max-md:border-0 max-md:bg-black"
 		>
 			<PreviewCanvas
 				container={container}
@@ -301,7 +301,7 @@ function PreviewCanvas({
 	return (
 		<PreviewViewportProvider value={viewport}>
 			<div className="flex size-full min-h-0 min-w-0 flex-col">
-				<div className="flex min-h-0 min-w-0 flex-1 p-2 pb-0">
+				<div className="flex min-h-0 min-w-0 flex-1 p-2 pb-0 max-md:p-0">
 					<ContextMenu>
 						<ContextMenuTrigger asChild>
 							<div
