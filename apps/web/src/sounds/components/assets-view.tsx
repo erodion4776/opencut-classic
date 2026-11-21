@@ -22,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { MusicLibraryView } from "@/sounds/components/music-library-view";
 import { useSoundSearch } from "@/sounds/use-sound-search";
 import { useSoundsStore } from "@/sounds/sounds-store";
 import type { SavedSound, SoundEffect } from "@/sounds/types";
@@ -41,6 +42,7 @@ export function SoundsView() {
 			<Tabs defaultValue="sound-effects" className="flex h-full flex-col">
 				<div className="px-3 pt-4 pb-0">
 					<TabsList>
+						<TabsTrigger value="music">Music</TabsTrigger>
 						<TabsTrigger value="sound-effects">Sound effects</TabsTrigger>
 						<TabsTrigger value="saved">Saved</TabsTrigger>
 					</TabsList>
