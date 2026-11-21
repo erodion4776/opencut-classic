@@ -12,7 +12,10 @@ const searchParamsSchema = z.object({
 		.enum(["downloads", "rating", "created", "score"])
 		.default("downloads"),
 	min_rating: z.coerce.number().min(0).max(5).default(3),
-	commercial_only: z.coerce.boolean().default(true),
+	commercial_only: z.preprocess(
+    (value) => value === "false" ? false : value === "true" ? true : value,
+    z.boolean().default(true),
+  ),
 });
 
 const freesoundResultSchema = z.object({
@@ -208,7 +211,6 @@ export async function GET(request: NextRequest) {
 			if (commercial_only) {
 				params.append("filter", 'license:("Creative Commons 0" OR "Attribution" OR "Attribution Commercial")');
 			}
-			params.append("filter", "tag:music OR tag:instrumental OR tag:background-music OR tag:soundtrack OR tag:song");
 		}
 
 		const response = await fetch(`${baseUrl}?${params.toString()}`);
