@@ -4,9 +4,11 @@ import { useSoundsStore } from "@/sounds/sounds-store";
 export function useSoundSearch({
 	query,
 	commercialOnly,
+	type = "effects",
 }: {
 	query: string;
 	commercialOnly: boolean;
+	type?: "effects" | "songs";
 }) {
 	const {
 		searchResults,
@@ -83,7 +85,7 @@ export function useSoundSearch({
 			return;
 		}
 
-		if (query === lastSearchQuery && searchResults.length > 0) {
+		if (`${type}:${query}` === lastSearchQuery && searchResults.length > 0) {
 			return;
 		}
 
@@ -96,14 +98,14 @@ export function useSoundSearch({
 				resetPagination();
 
 				const response = await fetch(
-					`/api/sounds/search?q=${encodeURIComponent(query)}&type=${type}&page=1`,
+					`/api/sounds/search?q=${encodeURIComponent(query)}&type=${type}&page=1&commercial_only=${commercialOnly}`,
 				);
 
 				if (!ignore) {
 					if (response.ok) {
 						const data = await response.json();
 						setSearchResults({ results: data.results });
-						setLastSearchQuery({ query: query });
+						setLastSearchQuery({ query: `${type}:${query}` });
 						setHasNextPage({ hasNext: !!data.next });
 						setTotalCount({ count: data.count });
 						setCurrentPage({ page: 1 });
@@ -130,6 +132,8 @@ export function useSoundSearch({
 		};
 	}, [
 		query,
+		type,
+		commercialOnly,
 		lastSearchQuery,
 		searchResults.length,
 		setSearchResults,
