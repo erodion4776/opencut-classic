@@ -228,7 +228,7 @@ export const useSoundsStore = create<SoundsStore>((set, get) => ({
 			const element = buildLibraryAudioElement({
 				sourceUrl: audioUrl,
 				name: sound.name,
-				duration: mediaTimeFromSeconds({ seconds: sound.duration }),
+				duration: mediaTimeFromSeconds({ seconds: buffer.duration }),
 				startTime: currentTime,
 				buffer,
 			});
