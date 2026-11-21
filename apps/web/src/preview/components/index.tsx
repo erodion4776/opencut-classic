@@ -78,7 +78,7 @@ export function PreviewPanel({
 	return (
 		<div
 			ref={handleContainerRef}
-			className="panel bg-background relative flex size-full min-h-0 min-w-0 flex-col rounded-sm border"
+			className="panel relative flex size-full min-h-0 min-w-0 flex-col rounded-sm border bg-background max-md:rounded-none max-md:border-0 max-md:bg-black"
 		>
 			<PreviewCanvas
 				container={container}
@@ -206,12 +206,26 @@ function PreviewCanvas({
 		lastFrameRef.current = frame;
 		renderer
 			.render({ node: renderTree, time: renderTime })
-			.then(() => {
+			.catch((error) => {
+				console.error("Preview frame render failed:", error);
+				lastFrameRef.current = -1;
+			})
+			.finally(() => {
 				renderingRef.current = false;
 			});
 	}, [renderer, renderTree, editor.playback, editor.timeline]);
 
 	useRafLoop(render);
+
+	// The mobile editor can change the preview's available height after the
+	// first paint. Force a fresh frame after mount/resize so a frame skipped
+	// while the viewport was hidden or zero-sized is rendered once it is ready.
+	useEffect(() => {
+		lastFrameRef.current = -1;
+		lastSceneRef.current = null;
+		const frameId = requestAnimationFrame(() => render());
+		return () => cancelAnimationFrame(frameId);
+	}, [render, viewportSize.width, viewportSize.height]);
 
 	useEffect(() => {
 		const container = viewportRef.current;
@@ -301,7 +315,7 @@ function PreviewCanvas({
 	return (
 		<PreviewViewportProvider value={viewport}>
 			<div className="flex size-full min-h-0 min-w-0 flex-col">
-				<div className="flex min-h-0 min-w-0 flex-1 p-2 pb-0">
+				<div className="flex min-h-0 min-w-0 flex-1 p-2 pb-0 max-md:p-0">
 					<ContextMenu>
 						<ContextMenuTrigger asChild>
 							<div
@@ -310,7 +324,7 @@ function PreviewCanvas({
 							>
 							<div
 								ref={canvasMountRef}
-								className="absolute block border"
+								className="absolute block border max-md:border-0"
 								style={{
 									left: viewport.sceneLeft,
 									top: viewport.sceneTop,

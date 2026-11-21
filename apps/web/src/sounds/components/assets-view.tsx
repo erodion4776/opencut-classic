@@ -22,6 +22,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { MusicLibraryView } from "@/sounds/components/music-library-view";
+import { UploadSoundButton } from "@/sounds/components/upload-sound-button";
 import { useSoundSearch } from "@/sounds/use-sound-search";
 import { useSoundsStore } from "@/sounds/sounds-store";
 import type { SavedSound, SoundEffect } from "@/sounds/types";
@@ -39,13 +41,18 @@ export function SoundsView() {
 	return (
 		<div className="flex h-full flex-col">
 			<Tabs defaultValue="sound-effects" className="flex h-full flex-col">
-				<div className="px-3 pt-4 pb-0">
+				<div className="flex items-center justify-between px-3 pt-4 pb-0">
+                    <UploadSoundButton />
 					<TabsList>
+						<TabsTrigger value="music">Music</TabsTrigger>
 						<TabsTrigger value="sound-effects">Sound effects</TabsTrigger>
 						<TabsTrigger value="saved">Saved</TabsTrigger>
 					</TabsList>
 				</div>
 				<Separator className="my-4" />
+				<TabsContent value="music" className="mt-0 flex min-h-0 flex-1 flex-col p-5 pt-0">
+					<MusicLibraryView />
+				</TabsContent>
 				<TabsContent
 					value="sound-effects"
 					className="mt-0 flex min-h-0 flex-1 flex-col p-5 pt-0"
@@ -77,6 +84,7 @@ function SoundEffectsView() {
 		hasLoaded,
 		setTopSoundEffects,
 		setLoading,
+		error,
 		setError,
 		setHasLoaded,
 		setCurrentPage,
@@ -270,7 +278,10 @@ function SoundEffectsView() {
 					onScrollCapture={handleScrollWithPosition}
 				>
 					<div className="flex flex-col gap-4">
-						{isLoading && !searchQuery && (
+						{error && !searchQuery && (
+                            <div className="text-destructive text-sm">Sound search error: {error}</div>
+                        )}
+                        {isLoading && !searchQuery && (
 							<div className="text-muted-foreground text-sm">
 								Loading sounds...
 							</div>
@@ -286,7 +297,7 @@ function SoundEffectsView() {
 								onPlay={playSound}
 							/>
 						))}
-						{!isLoading && !isSearching && displayedSounds.length === 0 && (
+						{!isLoading && !isSearching && !error && displayedSounds.length === 0 && (
 							<div className="text-muted-foreground text-sm">
 								{searchQuery ? "No sounds found" : "No sounds available"}
 							</div>

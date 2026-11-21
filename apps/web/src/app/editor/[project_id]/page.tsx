@@ -17,8 +17,9 @@ import { MigrationDialog } from "@/project/components/migration-dialog";
 import { usePanelStore } from "@/editor/panel-store";
 import { usePasteMedia } from "@/media/use-paste-media";
 import { MobileGate } from "@/components/editor/mobile-gate";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useEditor } from "@/editor/use-editor";
+import { AudioLines, Captions, Scissors, Layers, SlidersHorizontal, Sparkles, Type, X } from "lucide-react";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ export default function Editor() {
 	return (
 		<MobileGate>
 			<EditorProvider projectId={projectId}>
-				<div className="bg-background flex h-screen w-screen flex-col overflow-hidden">
+				<div className="bg-background flex h-[100dvh] w-full min-w-0 flex-col overflow-hidden max-md:overflow-x-hidden max-md:bg-black">
 					<DegradedRendererBanner />
 					<EditorHeader />
 					<div className="min-h-0 min-w-0 flex-1">
@@ -91,6 +92,14 @@ function EditorLayout() {
 		mediaQuery.addEventListener("change", updateViewport);
 		return () => mediaQuery.removeEventListener("change", updateViewport);
 	}, []);
+	useEffect(() => {
+		const openMobilePanel = (event: Event) => {
+			const detail = (event as CustomEvent<{ panel?: "media" | "properties" }>).detail;
+			setMobilePanel(detail?.panel ?? "media");
+		};
+		window.addEventListener("xtop:mobile-open-panel", openMobilePanel);
+		return () => window.removeEventListener("xtop:mobile-open-panel", openMobilePanel);
+	}, []);
 	const activeScene = useEditor((editor) =>
 		editor.scenes.getActiveSceneOrNull(),
 	);
@@ -137,44 +146,21 @@ function EditorLayout() {
 
 	if (isMobile) {
 		return (
-			<div className="flex h-full min-h-0 flex-col gap-2 px-2 pb-2">
-				<div className="grid grid-cols-3 gap-1 rounded-lg border bg-background p-1">
-					{([
-						["media", "Media & tools"],
-						["preview", "Preview"],
-						["properties", "Properties"],
-					] as const).map(([panel, label]) => (
-						<Button
-							key={panel}
-							type="button"
-							variant={mobilePanel === panel ? "default" : "ghost"}
-							size="sm"
-							className="min-w-0 px-1 text-xs"
-							aria-pressed={mobilePanel === panel}
-							onClick={() => setMobilePanel(panel)}
-						>
-							{label}
-						</Button>
-					))}
+			<div className="relative flex h-full min-h-0 min-w-0 flex-col gap-0 overflow-x-hidden bg-black text-white">
+				<div className="min-h-0 flex-[0_0_48%] overflow-hidden bg-black">
+					<PreviewPanel overlayControls={overlayControls} overlayInstances={overlaySource.instances} onOverlayVisibilityChange={setOverlayVisibility} />
 				</div>
-				<div className="min-h-0 flex-1 overflow-hidden rounded-md">
-					{mobilePanel === "media" && <AssetsPanel />}
-					{mobilePanel === "preview" && (
-						<PreviewPanel
-							overlayControls={overlayControls}
-							overlayInstances={overlaySource.instances}
-							onOverlayVisibilityChange={setOverlayVisibility}
-						/>
-					)}
-					{mobilePanel === "properties" && <PropertiesPanel />}
-				</div>
-				<div className="h-[42%] min-h-[190px] shrink-0 overflow-hidden rounded-md border px-1 pb-1">
-					<Timeline />
-				</div>
+				<div className="min-h-0 flex-1 overflow-hidden border-t border-[#242426] bg-black"><Timeline /></div>
+				<MobileActionDock onOpenPanel={setMobilePanel} />
+				{mobilePanel !== "preview" && (
+					<div className="absolute inset-x-0 bottom-16 z-40 flex max-h-[42%] min-h-0 flex-col overflow-hidden rounded-t-2xl border border-[#29292c] bg-[#111113] shadow-2xl">
+						<div className="flex h-12 shrink-0 items-center justify-between border-b border-[#29292c] px-4"><span className="text-sm font-semibold text-white">{mobilePanel === "properties" ? "Properties" : "Media & tools"}</span><button type="button" aria-label="Close panel" className="flex size-10 items-center justify-center rounded-full bg-[#242426]" onClick={() => setMobilePanel("preview")}><X className="size-5" /></button></div>
+						<div className="min-h-0 flex-1 overflow-auto">{mobilePanel === "properties" ? <PropertiesPanel /> : <AssetsPanel />}</div>
+					</div>
+				)}
 			</div>
 		);
 	}
-
 	return (
 		<ResizablePanelGroup
 			direction="vertical"
@@ -256,4 +242,22 @@ function EditorLayout() {
 			</ResizablePanel>
 		</ResizablePanelGroup>
 	);
+}
+
+
+function MobileActionDock({ onOpenPanel }: { onOpenPanel: (panel: "media" | "preview" | "properties") => void }) {
+	const items = [
+		{ label: "Edit", icon: Scissors, panel: "media" as const },
+		{ label: "Audio", icon: AudioLines, panel: "media" as const },
+		{ label: "Text", icon: Type, panel: "media" as const },
+		{ label: "Effects", icon: Sparkles, panel: "media" as const },
+		{ label: "Overlay", icon: Layers, panel: "media" as const },
+		{ label: "Captions", icon: Captions, panel: "media" as const },
+		{ label: "Properties", icon: SlidersHorizontal, panel: "properties" as const },
+	];
+	const dockRef = useRef<HTMLElement>(null);
+	useEffect(() => {
+		if (dockRef.current) dockRef.current.scrollLeft = 0;
+	}, []);
+	return <nav ref={dockRef} aria-label="Mobile editing tools" className="z-30 flex h-16 w-full shrink-0 items-center gap-1 overflow-x-auto overflow-y-hidden border-t border-[#242426] bg-[#09090a] px-1 pb-[env(safe-area-inset-bottom)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{items.map(({ label, icon: Icon, panel }) => <button key={label} type="button" onClick={() => onOpenPanel(panel)} className="flex h-12 w-[64px] shrink-0 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] text-[#b8b8bd] active:bg-[#242426]"><Icon className="size-5" /><span className="whitespace-nowrap">{label}</span></button>)}</nav>;
 }

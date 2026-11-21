@@ -26,19 +26,16 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ShortcutsDialog } from "@/actions/components/shortcuts-dialog";
 import Image from "next/image";
 import { cn } from "@/utils/ui";
+import { X } from "lucide-react";
 
 export function EditorHeader() {
 	return (
-		<header className="bg-background flex h-[3.4rem] items-center justify-between px-3 pt-0.5">
-			<div className="flex items-center gap-1">
+		<header className="bg-background flex min-h-[3.4rem] w-full min-w-0 items-center justify-between gap-1 overflow-hidden px-2 pt-0.5 sm:px-3 max-md:min-h-12 max-md:bg-black max-md:px-2">
+			<div className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
 				<ProjectDropdown />
-				<EditableProjectName />
+				<div className="max-md:hidden"><EditableProjectName /></div>
 			</div>
-			<nav className="flex items-center gap-2">
-				<FeedbackPopover />
-				<ExportButton />
-				<ThemeToggle />
-			</nav>
+			<nav className="flex shrink-0 items-center gap-2 max-md:gap-1"><div className="max-md:hidden"><FeedbackPopover /><ThemeToggle /></div><span className="hidden text-xs font-medium text-white/80 max-md:inline">1080p ▾</span><ExportButton /></nav>
 		</header>
 	);
 }
@@ -112,13 +109,7 @@ function ProjectDropdown() {
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost" size="icon" className="p-1 rounded-sm size-8">
-						<Image
-							src={DEFAULT_LOGO_URL}
-							alt="Project thumbnail"
-							width={32}
-							height={32}
-							className="invert dark:invert-0 size-5"
-						/>
+						<span className="hidden md:block"><Image src={DEFAULT_LOGO_URL} alt="Project thumbnail" width={32} height={32} className="invert dark:invert-0 size-5" /></span><X className="hidden max-md:block size-5" />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start" className="z-100 w-44">

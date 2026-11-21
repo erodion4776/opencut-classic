@@ -144,6 +144,19 @@ export function drawMeasuredTextLayout({
 	textColor,
 	background,
 	backgroundColor,
+	outlineColor = "transparent",
+	outlineWidth = 0,
+	shadowColor = "transparent",
+	shadowBlur = 0,
+	shadowOffsetX = 0,
+	shadowOffsetY = 0,
+	glowColor = "transparent",
+	glowBlur = 0,
+	gradientEnabled = false,
+	gradientStart = "#ff4d8d",
+	gradientEnd = "#7c4dff",
+	gradientAngle = 0,
+	reveal = 1,
 	textBaseline = "middle",
 }: {
 	ctx: TextCanvasContext;
@@ -151,12 +164,38 @@ export function drawMeasuredTextLayout({
 	textColor: string;
 	background?: ResolvedTextBackgroundLike | null;
 	backgroundColor?: string;
+	outlineColor?: string;
+	outlineWidth?: number;
+	shadowColor?: string;
+	shadowBlur?: number;
+	shadowOffsetX?: number;
+	shadowOffsetY?: number;
+	glowColor?: string;
+	glowBlur?: number;
+	gradientEnabled?: boolean;
+	gradientStart?: string;
+	gradientEnd?: string;
+	gradientAngle?: number;
+	reveal?: number;
 	textBaseline?: CanvasTextBaseline;
 }): void {
 	ctx.font = layout.fontString;
 	ctx.textAlign = layout.textAlign;
 	ctx.textBaseline = textBaseline;
-	ctx.fillStyle = textColor;
+	let resolvedTextColor: string | CanvasGradient = textColor;
+	if (gradientEnabled && layout.block.maxWidth > 0 && layout.block.height > 0) {
+		const angle = (gradientAngle * Math.PI) / 180;
+		const halfWidth = layout.block.maxWidth / 2;
+		const halfHeight = layout.block.height / 2;
+		const dx = Math.cos(angle) * (Math.abs(Math.cos(angle)) * halfWidth + Math.abs(Math.sin(angle)) * halfHeight);
+		const dy = Math.sin(angle) * (Math.abs(Math.cos(angle)) * halfWidth + Math.abs(Math.sin(angle)) * halfHeight);
+		const centerX = layout.textAlign === "left" ? halfWidth : layout.textAlign === "right" ? -halfWidth : 0;
+		const gradient = ctx.createLinearGradient(centerX - dx, -dy, centerX + dx, dy);
+		gradient.addColorStop(0, gradientStart);
+		gradient.addColorStop(1, gradientEnd);
+		resolvedTextColor = gradient;
+	}
+	ctx.fillStyle = resolvedTextColor;
 	setCanvasLetterSpacing({ ctx, letterSpacingPx: layout.letterSpacing });
 
 	if (
@@ -197,13 +236,40 @@ export function drawMeasuredTextLayout({
 		}
 	}
 
+	const safeReveal = clamp({ value: reveal, min: 0, max: 1 });
+	const totalCharacters = layout.lines.reduce((total, line) => total + line.length, 0);
+	let remainingCharacters = Math.ceil(totalCharacters * safeReveal);
 	for (let index = 0; index < layout.lines.length; index++) {
 		const lineY = index * layout.lineHeightPx - layout.block.visualCenterOffset;
+		const visibleLine = layout.lines[index].slice(0, Math.max(0, Math.min(layout.lines[index].length, remainingCharacters)));
+		remainingCharacters -= layout.lines[index].length;
+		if (!visibleLine) continue;
+		if (outlineWidth > 0 && outlineColor !== "transparent") {
+			ctx.strokeStyle = outlineColor;
+			ctx.lineWidth = outlineWidth;
+			ctx.lineJoin = "round";
+			ctx.strokeText(visibleLine, 0, lineY);
+		}
+		if (glowBlur > 0 && glowColor !== "transparent") {
+			ctx.shadowColor = glowColor;
+			ctx.shadowBlur = glowBlur;
+			ctx.shadowOffsetX = 0;
+			ctx.shadowOffsetY = 0;
+			ctx.fillText(visibleLine, 0, lineY);
+		}
+		ctx.shadowColor = shadowColor;
+		ctx.shadowBlur = shadowBlur;
+		ctx.shadowOffsetX = shadowOffsetX;
+		ctx.shadowOffsetY = shadowOffsetY;
 		ctx.fillText(layout.lines[index], 0, lineY);
+		ctx.shadowColor = "transparent";
+		ctx.shadowBlur = 0;
+		ctx.shadowOffsetX = 0;
+		ctx.shadowOffsetY = 0;
 		drawTextDecoration({
 			ctx,
 			textDecoration: layout.textDecoration,
-			lineWidth: layout.lineMetrics[index].width,
+			lineWidth: ctx.measureText(visibleLine).width,
 			lineY,
 			metrics: layout.lineMetrics[index],
 			scaledFontSize: layout.scaledFontSize,

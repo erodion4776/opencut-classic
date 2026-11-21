@@ -12,7 +12,10 @@ const searchParamsSchema = z.object({
 		.enum(["downloads", "rating", "created", "score"])
 		.default("downloads"),
 	min_rating: z.coerce.number().min(0).max(5).default(3),
-	commercial_only: z.coerce.boolean().default(true),
+	commercial_only: z.preprocess(
+    (value) => value === "false" ? false : value === "true" ? true : value,
+    z.boolean().default(true),
+  ),
 });
 
 const freesoundResultSchema = z.object({
@@ -108,7 +111,7 @@ function applyEffectsFilters({
 	if (commercial_only) {
 		params.append(
 			"filter",
-			'license:("Attribution" OR "Creative Commons 0" OR "Attribution Noncommercial" OR "Attribution Commercial")',
+			'license:("Creative Commons 0" OR "Attribution" OR "Attribution Commercial")',
 		);
 	}
 
@@ -163,6 +166,7 @@ export async function GET(request: NextRequest) {
 			page_size: searchParams.get("page_size") || undefined,
 			sort: searchParams.get("sort") || undefined,
 			min_rating: searchParams.get("min_rating") || undefined,
+			commercial_only: searchParams.get("commercial_only") || undefined,
 		});
 
 		if (!validationResult.success) {
@@ -185,16 +189,6 @@ export async function GET(request: NextRequest) {
 			commercial_only,
 		} = validationResult.data;
 
-		if (type === "songs") {
-			return NextResponse.json(
-				{
-					error: "Songs are not available yet",
-					message:
-						"Song search functionality is coming soon. Try searching for sound effects instead.",
-				},
-				{ status: 501 },
-			);
-		}
 
 		const baseUrl = "https://freesound.org/apiv2/search/text/";
 
@@ -213,6 +207,10 @@ export async function GET(request: NextRequest) {
 		const isEffectsSearch = type === "effects" || !type;
 		if (isEffectsSearch) {
 			applyEffectsFilters({ params, min_rating, commercial_only });
+		} else {
+			if (commercial_only) {
+				params.append("filter", 'license:("Creative Commons 0" OR "Attribution" OR "Attribution Commercial")');
+			}
 		}
 
 		const response = await fetch(`${baseUrl}?${params.toString()}`);

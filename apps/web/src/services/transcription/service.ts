@@ -39,7 +39,6 @@ class TranscriptionService {
 
 			const handleMessage = (event: MessageEvent<WorkerResponse>) => {
 				const response = event.data;
-
 				switch (response.type) {
 					case "transcribe-progress":
 						onProgress?.({
@@ -48,21 +47,19 @@ class TranscriptionService {
 							message: "Transcribing audio...",
 						});
 						break;
-
 					case "transcribe-complete":
 						this.worker?.removeEventListener("message", handleMessage);
 						resolve({
 							text: response.text,
 							segments: response.segments,
+							words: response.words,
 							language,
 						});
 						break;
-
 					case "transcribe-error":
 						this.worker?.removeEventListener("message", handleMessage);
 						reject(new Error(response.error));
 						break;
-
 					case "cancelled":
 						this.worker?.removeEventListener("message", handleMessage);
 						reject(new Error("Transcription cancelled"));
@@ -71,7 +68,6 @@ class TranscriptionService {
 			};
 
 			this.worker.addEventListener("message", handleMessage);
-
 			this.worker.postMessage({
 				type: "transcribe",
 				audio: audioData,
@@ -92,11 +88,7 @@ class TranscriptionService {
 		onProgress?: ProgressCallback;
 	}): Promise<void> {
 		const needsNewModel = this.currentModelId !== modelId;
-
-		if (this.worker && this.isInitialized && !needsNewModel) {
-			return;
-		}
-
+		if (this.worker && this.isInitialized && !needsNewModel) return;
 		if (this.isInitializing && !needsNewModel) {
 			await this.waitForInit();
 			return;
@@ -105,11 +97,8 @@ class TranscriptionService {
 		this.terminate();
 		this.isInitializing = true;
 		this.isInitialized = false;
-
 		const model = TRANSCRIPTION_MODELS.find((m) => m.id === modelId);
-		if (!model) {
-			throw new Error(`Unknown model: ${modelId}`);
-		}
+		if (!model) throw new Error(`Unknown model: ${modelId}`);
 
 		this.worker = new Worker(new URL("./worker.ts", import.meta.url), {
 			type: "module",
@@ -123,7 +112,6 @@ class TranscriptionService {
 
 			const handleMessage = (event: MessageEvent<WorkerResponse>) => {
 				const response = event.data;
-
 				switch (response.type) {
 					case "init-progress":
 						onProgress?.({
@@ -132,7 +120,6 @@ class TranscriptionService {
 							message: `Loading ${model.name} model...`,
 						});
 						break;
-
 					case "init-complete":
 						this.worker?.removeEventListener("message", handleMessage);
 						this.isInitialized = true;
@@ -140,7 +127,6 @@ class TranscriptionService {
 						this.currentModelId = modelId;
 						resolve();
 						break;
-
 					case "init-error":
 						this.worker?.removeEventListener("message", handleMessage);
 						this.isInitializing = false;
@@ -151,7 +137,6 @@ class TranscriptionService {
 			};
 
 			this.worker.addEventListener("message", handleMessage);
-
 			this.worker.postMessage({
 				type: "init",
 				modelId: model.huggingFaceId,
@@ -162,13 +147,8 @@ class TranscriptionService {
 	private waitForInit(): Promise<void> {
 		return new Promise((resolve) => {
 			const checkInit = () => {
-				if (this.isInitialized) {
-					resolve();
-				} else if (!this.isInitializing) {
-					resolve();
-				} else {
-					setTimeout(checkInit, 100);
-				}
+				if (this.isInitialized || !this.isInitializing) resolve();
+				else setTimeout(checkInit, 100);
 			};
 			checkInit();
 		});

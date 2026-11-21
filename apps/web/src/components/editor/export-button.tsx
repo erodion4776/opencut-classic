@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { TransitionTopIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -78,9 +79,9 @@ export function ExportButton() {
 						}
 					}}
 				>
-					<div className="relative flex items-center gap-1.5 rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7] px-4 py-1 shadow-[0_1px_3px_0px_rgba(0,0,0,0.65)]">
+					<div className="relative flex items-center gap-1 rounded-full bg-[#20c7d9] px-3 py-1 shadow-sm max-md:px-3 max-md:py-1.5">
 						<HugeiconsIcon icon={TransitionTopIcon} className="z-50 size-3.5" />
-						<span className="z-50 text-[0.875rem]">Export</span>
+						<span className="z-50 hidden text-[0.875rem] md:inline">Export video</span><span className="z-50 text-xs md:hidden">Export</span>
 						<div className="absolute top-0 left-0 z-10 flex size-full items-center justify-center rounded-[0.6rem] bg-linear-to-t from-white/0 to-white/50">
 							<div className="absolute top-[0.08rem] z-50 h-[calc(100%-2px)] w-[calc(100%-2px)] rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7]"></div>
 						</div>
@@ -137,6 +138,9 @@ function ExportPopover({
 
 			editor.project.clearExportState();
 			onOpenChange(false);
+			toast.success("Video exported", {
+				description: "Your video has been downloaded. Upload it to your XTOP Social Studio publishing library when you are ready to share it.",
+			});
 		}
 	};
 
@@ -155,7 +159,7 @@ function ExportPopover({
 				<>
 					<div className="flex items-center justify-between p-3 border-b">
 						<h3 className="font-medium text-sm">
-							{isExporting ? "Exporting project" : "Export project"}
+							{isExporting ? "Exporting video" : "Export video"}
 						</h3>
 					</div>
 

@@ -3,10 +3,11 @@ import {
 	type AutomaticSpeechRecognitionPipeline,
 	type AutomaticSpeechRecognitionOutput,
 } from "@huggingface/transformers";
-import type { TranscriptionSegment } from "@/transcription/types";
+import type { TranscriptionSegment, TranscriptionWord } from "@/transcription/types";
 import {
 	DEFAULT_CHUNK_LENGTH_SECONDS,
 	DEFAULT_STRIDE_SECONDS,
+	DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
 } from "@/transcription/audio";
 
 export type WorkerMessage =
@@ -23,6 +24,7 @@ export type WorkerResponse =
 			type: "transcribe-complete";
 			text: string;
 			segments: TranscriptionSegment[];
+			words: TranscriptionWord[];
 	  }
 	| { type: "transcribe-error"; error: string }
 	| { type: "cancelled" };
@@ -84,7 +86,6 @@ async function handleInit({ modelId }: { modelId: string }) {
 					}
 				}
 
-				// sum all bytes
 				let totalLoaded = 0;
 				let totalSize = 0;
 				for (const { loaded, total } of fileBytes.values()) {
@@ -94,9 +95,7 @@ async function handleInit({ modelId }: { modelId: string }) {
 
 				if (totalSize === 0) return;
 
-				const overallProgress = (totalLoaded / totalSize) * 100;
-				const roundedProgress = Math.floor(overallProgress);
-
+				const roundedProgress = Math.floor((totalLoaded / totalSize) * 100);
 				if (roundedProgress !== lastReportedProgress) {
 					lastReportedProgress = roundedProgress;
 					self.postMessage({
@@ -138,7 +137,7 @@ async function handleTranscribe({
 			chunk_length_s: DEFAULT_CHUNK_LENGTH_SECONDS,
 			stride_length_s: DEFAULT_STRIDE_SECONDS,
 			language: language === "auto" ? undefined : language,
-			return_timestamps: true,
+			return_timestamps: "word",
 		});
 
 		if (cancelled) return;
@@ -146,25 +145,35 @@ async function handleTranscribe({
 		const result: AutomaticSpeechRecognitionOutput = Array.isArray(rawResult)
 			? rawResult[0]
 			: rawResult;
-
 		const segments: TranscriptionSegment[] = [];
+		const words: TranscriptionWord[] = [];
 
 		if (result.chunks) {
 			for (const chunk of result.chunks) {
-				if (chunk.timestamp && chunk.timestamp.length >= 2) {
-					segments.push({
-						text: chunk.text,
-						start: chunk.timestamp[0] ?? 0,
-						end: chunk.timestamp[1] ?? chunk.timestamp[0] ?? 0,
-					});
-				}
+				if (!chunk.timestamp || chunk.timestamp.length < 2) continue;
+				const start = chunk.timestamp[0] ?? 0;
+				const end = chunk.timestamp[1] ?? start;
+				if (end <= start) continue;
+				const text = chunk.text.trim();
+				if (!text) continue;
+				words.push({ text, start, end });
+				segments.push({ text, start, end });
 			}
+		}
+
+		if (words.length === 0 && result.text.trim()) {
+			segments.push({
+				text: result.text,
+				start: 0,
+				end: audio.length / DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
+			});
 		}
 
 		self.postMessage({
 			type: "transcribe-complete",
 			text: result.text,
 			segments,
+			words,
 		} satisfies WorkerResponse);
 	} catch (error) {
 		if (cancelled) return;

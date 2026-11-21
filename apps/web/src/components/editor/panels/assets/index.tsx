@@ -9,6 +9,13 @@ import { SoundsView } from "@/sounds/components/assets-view";
 import { StickersView } from "@/stickers/components/assets-view";
 import { TextView } from "@/text/components/assets-view";
 import { EffectsView } from "@/effects/components/assets-view";
+import { AdjustmentView } from "./views/adjustment";
+import { TransitionsView } from "./views/transitions";
+import { TextAnimationsView } from "./views/text-animations";
+import { TextStudioView } from "./views/text-studio";
+import { AudioStudioView } from "./views/audio-studio";
+import { SmartCutView } from "./views/smart-cut";
+import { SceneStudioView } from "./views/scene-studio";
 
 export function AssetsPanel() {
 	const { activeTab } = useAssetsPanelStore();
@@ -19,17 +26,14 @@ export function AssetsPanel() {
 		text: <TextView />,
 		stickers: <StickersView />,
 		effects: <EffectsView />,
-		transitions: (
-			<div className="text-muted-foreground p-4">
-				Transitions view coming soon...
-			</div>
-		),
+		transitions: <TransitionsView />,
+		"text-animations": <TextAnimationsView />,
 		captions: <Captions />,
-		adjustment: (
-			<div className="text-muted-foreground p-4">
-				Adjustment view coming soon...
-			</div>
-		),
+		adjustment: <AdjustmentView />,
+		"text-studio": <TextStudioView />,
+		"audio-studio": <AudioStudioView />,
+		"smart-cut": <SmartCutView />,
+		"scene-studio": <SceneStudioView />,
 		settings: <SettingsView />,
 	};
 

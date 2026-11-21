@@ -324,6 +324,51 @@ const textElementParams: ElementParamDefinition[] = [
 		step: 1,
 		dependencies: [{ param: "background.enabled", equals: true }],
 	},
+	{
+		key: "outline.color", label: "Outline Color", type: "color", default: "#000000",
+	},
+	{
+		key: "outline.width", label: "Outline Width", type: "number", default: 0, min: 0, max: 20, step: 0.5,
+	},
+	{
+		key: "shadow.enabled", label: "Shadow Enabled", type: "boolean", default: false, keyframable: false,
+	},
+	{
+		key: "shadow.color", label: "Shadow Color", type: "color", default: "#000000", dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
+	{
+		key: "shadow.blur", label: "Shadow Blur", type: "number", default: 12, min: 0, max: 100, step: 1, dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
+	{
+		key: "shadow.offsetX", label: "Shadow Offset X", type: "number", default: 3, min: -100, max: 100, step: 1, dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
+	{
+		key: "shadow.offsetY", label: "Shadow Offset Y", type: "number", default: 3, min: -100, max: 100, step: 1, dependencies: [{ param: "shadow.enabled", equals: true }],
+	},
+	{
+		key: "glow.enabled", label: "Neon Glow Enabled", type: "boolean", default: false, keyframable: false,
+	},
+	{
+		key: "glow.color", label: "Glow Color", type: "color", default: "#00e5ff", dependencies: [{ param: "glow.enabled", equals: true }],
+	},
+	{
+		key: "glow.blur", label: "Glow Strength", type: "number", default: 18, min: 0, max: 100, step: 1, dependencies: [{ param: "glow.enabled", equals: true }],
+	},
+	{
+		key: "gradient.enabled", label: "Gradient Text Enabled", type: "boolean", default: false, keyframable: false,
+	},
+	{
+		key: "gradient.start", label: "Gradient Start Color", type: "color", default: "#ff4d8d", dependencies: [{ param: "gradient.enabled", equals: true }],
+	},
+	{
+		key: "gradient.end", label: "Gradient End Color", type: "color", default: "#7c4dff", dependencies: [{ param: "gradient.enabled", equals: true }],
+	},
+	{
+		key: "gradient.angle", label: "Gradient Angle", type: "number", default: 0, min: 0, max: 360, step: 1, dependencies: [{ param: "gradient.enabled", equals: true }],
+	},
+	{
+		key: "text.reveal", label: "Text Reveal", type: "number", default: 1, min: 0, max: 1, step: 0.01,
+	},
 ];
 
 export const elementParamRegistry = new DefinitionRegistry<

@@ -6,9 +6,12 @@ import type { TimelineTrack } from "@/timeline";
 import type { TimelineElement as TimelineElementType } from "@/timeline";
 import { TIMELINE_LAYERS } from "./layers";
 import type { ElementDragView } from "@/timeline";
+import { timelineTimeToPixels } from "@/timeline";
+import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 
 interface TimelineTrackContentProps {
 	track: TimelineTrack;
+	isMainTrack: boolean;
 	zoomLevel: number;
 	dragView: ElementDragView;
 	onResizeStart: (params: {
@@ -35,6 +38,7 @@ interface TimelineTrackContentProps {
 
 export function TimelineTrackContent({
 	track,
+	isMainTrack,
 	zoomLevel,
 	dragView,
 	onResizeStart,
@@ -46,6 +50,18 @@ export function TimelineTrackContent({
 	targetElementId = null,
 }: TimelineTrackContentProps) {
 	const { isElementSelected } = useElementSelection();
+	const setActiveTab = useAssetsPanelStore((state) => state.setActiveTab);
+	const lastElementEnd = track.elements.reduce(
+		(end, element) => Math.max(end, element.startTime + element.duration),
+		0,
+	);
+	const appendMediaLeft = timelineTimeToPixels({ time: lastElementEnd, zoomLevel }) + 8;
+	const openAssetTab = (tab: "media" | "sounds" | "text") => {
+		setActiveTab(tab);
+		if (typeof window !== "undefined") {
+			window.dispatchEvent(new CustomEvent("xtop:mobile-open-panel", { detail: { panel: "media" } }));
+		}
+	};
 
 	return (
 		<div className="relative size-full">
@@ -78,7 +94,20 @@ export function TimelineTrackContent({
 				}}
 			>
 				{track.elements.length === 0 ? (
-					<div className="text-muted-foreground border-muted/30 pointer-events-none flex size-full items-center justify-center rounded-sm border-2 border-dashed text-xs" />
+					<>
+						<div className="text-muted-foreground border-muted/30 pointer-events-none flex size-full items-center justify-center rounded-sm border-2 border-dashed text-xs max-md:hidden" />
+						<button
+							type="button"
+							className="absolute inset-0 hidden items-center justify-center gap-2 border-b border-[#252528] text-xs text-muted-foreground transition-colors hover:bg-white/5 max-md:flex"
+						onClick={(event) => {
+							event.stopPropagation();
+							openAssetTab(track.type === "audio" ? "sounds" : track.type === "text" ? "text" : "media");
+						}}
+					>
+						<span className="text-base leading-none">+</span>
+						<span>Add {track.type === "audio" ? "audio" : track.type === "text" ? "text" : "media"}</span>
+						</button>
+					</>
 				) : (
 					track.elements.map((element) => {
 						const isSelected = isElementSelected({
@@ -107,6 +136,20 @@ export function TimelineTrackContent({
 							/>
 						);
 					})
+				)}
+				{isMainTrack && track.elements.length > 0 && (
+					<button
+						type="button"
+						aria-label="Add media to video track"
+						className="absolute top-1/2 z-20 hidden size-8 -translate-y-1/2 max-md:flex items-center justify-center rounded-full border border-white/20 bg-[#252528] text-lg text-white shadow-lg hover:bg-[#343438] max-md:size-7"
+						style={{ left: appendMediaLeft }}
+						onClick={(event) => {
+							event.stopPropagation();
+							openAssetTab("media");
+						}}
+					>
+						+
+					</button>
 				)}
 			</div>
 		</div>

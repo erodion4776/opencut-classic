@@ -12,6 +12,7 @@ import {
 	Settings01Icon,
 	SlidersHorizontalIcon,
 	ColorsIcon,
+	TextFontIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 
@@ -22,8 +23,13 @@ export const TAB_KEYS = [
 	"stickers",
 	"effects",
 	"transitions",
+	"text-animations",
 	"captions",
 	"adjustment",
+	"text-studio",
+	"audio-studio",
+	"smart-cut",
+	"scene-studio",
 	"settings",
 ] as const;
 
@@ -60,6 +66,10 @@ export const tabs = {
 		icon: createHugeiconsIcon({ icon: ArrowRightDoubleIcon }),
 		label: "Transitions",
 	},
+	"text-animations": {
+		icon: createHugeiconsIcon({ icon: TextIcon }),
+		label: "Text Motion",
+	},
 	captions: {
 		icon: createHugeiconsIcon({ icon: ClosedCaptionIcon }),
 		label: "Captions",
@@ -67,6 +77,22 @@ export const tabs = {
 	adjustment: {
 		icon: createHugeiconsIcon({ icon: SlidersHorizontalIcon }),
 		label: "Adjustment",
+	},
+	"text-studio": {
+		icon: createHugeiconsIcon({ icon: TextFontIcon }),
+		label: "Text Studio",
+	},
+	"audio-studio": {
+		icon: createHugeiconsIcon({ icon: HeadphonesIcon }),
+		label: "Audio Studio",
+	},
+	"smart-cut": {
+		icon: createHugeiconsIcon({ icon: MagicWand05Icon }),
+		label: "Smart Cut",
+	},
+	"scene-studio": {
+		icon: createHugeiconsIcon({ icon: MagicWand05Icon }),
+		label: "Scene + Highlights",
 	},
 	settings: {
 		icon: createHugeiconsIcon({ icon: Settings01Icon }),

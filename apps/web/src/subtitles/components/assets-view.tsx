@@ -14,10 +14,10 @@ import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/transcription/diagnostics";
 import { DEFAULT_TRANSCRIPTION_SAMPLE_RATE } from "@/transcription/audio";
 import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
 import type {
-	CaptionChunk,
 	TranscriptionLanguage,
 	TranscriptionProgress,
 } from "@/transcription/types";
+import type { SubtitleCue } from "@/subtitles/types";
 import { transcriptionService } from "@/services/transcription/service";
 import { decodeAudioToFloat32 } from "@/media/audio";
 import { buildCaptionChunks } from "@/transcription/caption";
@@ -39,6 +39,8 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { DiagnosticSeverity } from "@/diagnostics/types";
+import { CaptionStylesView } from "./caption-styles";
+import { CaptionAnimationsView } from "./caption-animations";
 
 const DIAGNOSTIC_BUTTON_VARIANT: Record<
 	DiagnosticSeverity,
@@ -86,6 +88,7 @@ function processingReducer(
 export function Captions() {
 	const [selectedLanguage, setSelectedLanguage] =
 		useState<TranscriptionLanguage>("auto");
+	const [wordsPerCaption, setWordsPerCaption] = useState("3");
 	const [processing, dispatch] = useReducer(processingReducer, IDLE_STATE);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -111,7 +114,7 @@ export function Captions() {
 	const insertCaptions = ({
 		captions,
 	}: {
-		captions: CaptionChunk[];
+		captions: SubtitleCue[];
 	}): boolean => {
 		const trackId = insertCaptionChunksAsTextTrack({ editor, captions });
 		return trackId !== null;
@@ -139,9 +142,27 @@ export function Captions() {
 			});
 
 			dispatch({ type: "update_step", step: "Generating captions..." });
-			const captionChunks = buildCaptionChunks({ segments: result.segments });
+			const captionChunks = buildCaptionChunks({
+				segments: result.segments,
+				words: result.words,
+				wordsPerChunk: Number(wordsPerCaption),
+			});
 
-			if (!insertCaptions({ captions: captionChunks })) {
+			const styledCaptions: SubtitleCue[] = captionChunks.map((caption) => ({
+				...caption,
+				...(wordsPerCaption === "1"
+					? {
+							style: {
+								color: "#ffe34d",
+								fontWeight: "bold",
+								fontSize: 6,
+								textAlign: "center",
+							},
+						}
+					: {}),
+			}));
+
+			if (!insertCaptions({ captions: styledCaptions })) {
 				dispatch({ type: "fail", error: "No captions were generated" });
 				return;
 			}
@@ -307,7 +328,22 @@ export function Captions() {
 								</SelectContent>
 							</Select>
 						</SectionField>
+						<SectionField label="Caption timing style">
+							<Select value={wordsPerCaption} onValueChange={setWordsPerCaption}>
+								<SelectTrigger>
+									<SelectValue placeholder="Words per caption" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="1">Word by word</SelectItem>
+									<SelectItem value="3">3 words at a time</SelectItem>
+									<SelectItem value="5">5 words at a time</SelectItem>
+								</SelectContent>
+							</Select>
+						</SectionField>
 					</SectionFields>
+					<p className="text-muted-foreground text-xs">
+						Uses Whisper word timestamps when available. In Word by word mode, each timed word appears as a bold yellow karaoke highlight; grouped modes retain regular caption styling. Timing may still need manual review.
+					</p>
 
 					<Button
 						type="button"
@@ -334,6 +370,8 @@ export function Captions() {
 					)}
 				</SectionContent>
 			</Section>
+			<CaptionStylesView />
+			<CaptionAnimationsView />
 		</PanelView>
 	);
 }

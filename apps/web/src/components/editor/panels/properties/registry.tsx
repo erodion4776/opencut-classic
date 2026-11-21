@@ -57,6 +57,20 @@ const TEXT_PARAM_KEYS = [
 	"background.paddingY",
 	"background.offsetX",
 	"background.offsetY",
+	"outline.color",
+	"outline.width",
+	"shadow.enabled",
+	"shadow.color",
+	"shadow.blur",
+	"shadow.offsetX",
+	"shadow.offsetY",
+	"glow.enabled",
+	"glow.color",
+	"glow.blur",
+	"gradient.enabled",
+	"gradient.start",
+	"gradient.end",
+	"gradient.angle",
 ] as const;
 
 export type TabContentProps = {
