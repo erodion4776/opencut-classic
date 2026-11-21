@@ -50,7 +50,7 @@ export function MusicLibraryView() {
      showClearIcon
      onClear={() => setQuery("music")}
     />
-    <p className="text-xs text-muted-foreground">Music search · commercially licensed results only. Check each track's licence before publishing.</p>
+    <p className="text-xs text-muted-foreground">Music search · commercially licensed results only. Timeline insertion uses the available preview; full-track import is still pending. Check each track's licence before publishing.</p>
    </div>
    {error && <p className="text-sm text-destructive">{error}</p>}
    <ScrollArea className="min-h-0 flex-1">
