@@ -163,6 +163,7 @@ export async function GET(request: NextRequest) {
 			page_size: searchParams.get("page_size") || undefined,
 			sort: searchParams.get("sort") || undefined,
 			min_rating: searchParams.get("min_rating") || undefined,
+			commercial_only: searchParams.get("commercial_only") || undefined,
 		});
 
 		if (!validationResult.success) {
@@ -207,7 +208,7 @@ export async function GET(request: NextRequest) {
 			if (commercial_only) {
 				params.append("filter", 'license:("Creative Commons 0" OR "Attribution" OR "Attribution Commercial")');
 			}
-			params.append("filter", "tag:music OR tag:instrumental OR tag:background-music OR tag: soundtrack OR tag: song");
+			params.append("filter", "tag:music OR tag:instrumental OR tag:background-music OR tag:soundtrack OR tag:song");
 		}
 
 		const response = await fetch(`${baseUrl}?${params.toString()}`);
