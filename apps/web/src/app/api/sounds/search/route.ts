@@ -108,7 +108,7 @@ function applyEffectsFilters({
 	if (commercial_only) {
 		params.append(
 			"filter",
-			'license:("Attribution" OR "Creative Commons 0" OR "Attribution Noncommercial" OR "Attribution Commercial")',
+			'license:("Creative Commons 0" OR "Attribution" OR "Attribution Commercial")',
 		);
 	}
 
@@ -185,16 +185,6 @@ export async function GET(request: NextRequest) {
 			commercial_only,
 		} = validationResult.data;
 
-		if (type === "songs") {
-			return NextResponse.json(
-				{
-					error: "Songs are not available yet",
-					message:
-						"Song search functionality is coming soon. Try searching for sound effects instead.",
-				},
-				{ status: 501 },
-			);
-		}
 
 		const baseUrl = "https://freesound.org/apiv2/search/text/";
 
@@ -213,6 +203,11 @@ export async function GET(request: NextRequest) {
 		const isEffectsSearch = type === "effects" || !type;
 		if (isEffectsSearch) {
 			applyEffectsFilters({ params, min_rating, commercial_only });
+		} else {
+			if (commercial_only) {
+				params.append("filter", 'license:("Creative Commons 0" OR "Attribution" OR "Attribution Commercial")');
+			}
+			params.append("filter", "tag:music OR tag:instrumental OR tag:background-music OR tag: soundtrack OR tag: song");
 		}
 
 		const response = await fetch(`${baseUrl}?${params.toString()}`);
