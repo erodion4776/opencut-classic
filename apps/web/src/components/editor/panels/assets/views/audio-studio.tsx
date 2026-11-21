@@ -24,6 +24,19 @@ export function AudioStudioView() {
  const [fadeDuration, setFadeDuration] = useState(1);
  const selected = editor.timeline.getElementsWithTracks({ elements: selectedElements });
  const item = selected.length === 1 ? selected[0] : null;
+ const selectedAudio = item?.element.type === "audio" ? item.element : null;
+ const waveform = useMemo(() => {
+  const channel = selectedAudio?.buffer?.getChannelData(0);
+  if (!channel?.length) return [];
+  const bars = 64;
+  return Array.from({ length: bars }, (_, index) => {
+   const start = Math.floor((index / bars) * channel.length);
+   const end = Math.max(start + 1, Math.floor(((index + 1) / bars) * channel.length));
+   let peak = 0;
+   for (let sample = start; sample < Math.min(end, channel.length); sample++) peak = Math.max(peak, Math.abs(channel[sample]));
+   return Math.max(8, Math.round(peak * 100));
+  });
+ }, [selectedAudio?.buffer]);
 
  if (!item || item.element.type !== "audio") {
   return (
@@ -44,19 +57,6 @@ export function AudioStudioView() {
  const audioTab = audioConfig.tabs.find((tab) => tab.id === "audio");
  const speedTab = audioConfig.tabs.find((tab) => tab.id === "speed");
  const hasVolumeAnimation = Boolean(element.animations?.volume);
- const waveform = useMemo(() => {
-  const channel = element.buffer?.getChannelData(0);
-  if (!channel?.length) return [];
-  const bars = 64;
-  return Array.from({ length: bars }, (_, index) => {
-   const start = Math.floor((index / bars) * channel.length);
-   const end = Math.max(start + 1, Math.floor(((index + 1) / bars) * channel.length));
-   let peak = 0;
-   for (let sample = start; sample < Math.min(end, channel.length); sample++) peak = Math.max(peak, Math.abs(channel[sample]));
-   return Math.max(8, Math.round(peak * 100));
-  });
- }, [element.buffer]);
-
  const applyFade = (mode: FadeMode) => {
   if (duration <= 0 || hasVolumeAnimation) return;
   const start = -60;
