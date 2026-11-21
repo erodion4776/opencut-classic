@@ -39,7 +39,7 @@ export function useSoundSearch({
 
 			const searchParams = new URLSearchParams({
 				page: nextPage.toString(),
-				type: "effects",
+				type,
 			});
 
 			if (query.trim()) {
@@ -96,7 +96,7 @@ export function useSoundSearch({
 				resetPagination();
 
 				const response = await fetch(
-					`/api/sounds/search?q=${encodeURIComponent(query)}&type=effects&page=1`,
+					`/api/sounds/search?q=${encodeURIComponent(query)}&type=${type}&page=1`,
 				);
 
 				if (!ignore) {
