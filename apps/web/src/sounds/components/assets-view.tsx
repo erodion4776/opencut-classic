@@ -48,6 +48,9 @@ export function SoundsView() {
 					</TabsList>
 				</div>
 				<Separator className="my-4" />
+				<TabsContent value="music" className="mt-0 flex min-h-0 flex-1 flex-col p-5 pt-0">
+					<MusicLibraryView />
+				</TabsContent>
 				<TabsContent
 					value="sound-effects"
 					className="mt-0 flex min-h-0 flex-1 flex-col p-5 pt-0"
